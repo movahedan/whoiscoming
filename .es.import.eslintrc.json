@@ -1,0 +1,109 @@
+{
+  "plugins": ["import"],
+  "settings": {
+    "import/internal-regex": "^(?:@whoiscoming-ui/)",
+    "import/resolver": { "node": { "paths": ["."] } }
+  },
+  "extends": [
+    "plugin:import/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ],
+  "rules": {
+    "import/first": "error",
+    "import/no-cycle": "error",
+    "import/namespace": "error",
+    "import/no-duplicates": "error",
+    "import/no-unresolved": "error",
+    "import/no-self-import": "error",
+    "import/no-default-export": "error",
+    "import/no-unused-modules": "error",
+    "import/no-mutable-exports": "error",
+    "import/no-named-as-default": "error",
+    "import/newline-after-import": "error",
+    "import/no-useless-path-segments": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          ["builtin", "external"],
+          "internal",
+          ["parent", "sibling", "index"],
+          "type"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "@whoiscoming-ui",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin", "external"],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc", "caseInsensitive": false },
+        "warnOnUnassignedImports": false
+      }
+    ],
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
+    "import/max-dependencies": [
+      "error",
+      { "max": 10, "ignoreTypeImports": true }
+    ],
+    "import/no-anonymous-default-export": [
+      "error",
+      {
+        "allowArray": false,
+        "allowArrowFunction": false,
+        "allowAnonymousClass": false,
+        "allowAnonymousFunction": false,
+        "allowCallExpression": false,
+        "allowLiteral": false,
+        "allowObject": false
+      }
+    ],
+    "import/named": "warn",
+    "import/export": "warn",
+    "import/extensions": "off",
+    "import/group-exports": "off",
+    "import/no-relative-parent-imports": "off",
+    "no-restricted-imports": "off" // nx module boundaries will handle it
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{ts,tsx}"],
+      "extends": ["plugin:import/typescript"],
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "alwaysTryTypes": true,
+            "project": ["apps/*/tsconfig.json", "libs/*/tsconfig.json"]
+          }
+        }
+      }
+    },
+    {
+      "files": ["src/index.ts"],
+      "rules": {
+        "import/max-dependencies": [
+          "off",
+          { "max": 100, "ignoreTypeImports": true }
+        ]
+      }
+    },
+    {
+      "files": ["*.d.ts", "jest.setup.js"],
+      "rules": {
+        "import/no-unassigned-import": "off"
+      }
+    },
+    {
+      "files": ["*.stories.tsx"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    }
+  ]
+}

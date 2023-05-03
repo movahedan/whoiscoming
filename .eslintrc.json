@@ -1,0 +1,58 @@
+{
+  "root": true,
+  "extends": [
+    "plugin:prettier/recommended", 
+    "eslint:recommended",
+    "next"
+  ],
+  "rules": {
+    "prettier/prettier": ["error", {
+      "singleQuote": true,
+      "jsxSingleQuote": true 
+    }]
+  },
+  "overrides": [
+    {
+      "files": ["*.{html,css,scss,json,svg,js,jsx,ts,tsx}"],
+      "rules": {
+        "prettier/prettier": ["error", { "singleQuote": true, "jsxSingleQuote": true }]
+      }
+    },
+    {
+      "files": ["*.{js,jsx,ts,tsx}"],
+      "extends": [
+        ".es.import.eslintrc.json",
+        ".es.react.eslintrc", 
+        ".es.next.eslintrc"
+      ],
+      "rules": {
+        "newline-before-return": "error",
+        "max-lines": [
+          "error",
+          { "max": 1000, "skipBlankLines": true, "skipComments": true }
+        ]
+      }
+    },
+    {
+      "files": ["*.{ts,tsx}"],
+      "plugins": ["@typescript-eslint"],
+			"parser": "@typescript-eslint/parser",
+			"extends": [
+				"plugin:@typescript-eslint/recommended",
+				"plugin:@typescript-eslint/eslint-recommended"
+			],
+			"rules": {
+				"@typescript-eslint/ban-ts-comment": ["warn"],
+				"@typescript-eslint/no-unused-vars": ["error"],
+				"@typescript-eslint/no-var-requires": ["error"],
+				"@typescript-eslint/no-empty-function": ["warn"],
+				"@typescript-eslint/explicit-module-boundary-types": ["off"],
+				"@typescript-eslint/explicit-function-return-type": ["off"],
+				"@typescript-eslint/consistent-type-imports": [
+					"error",
+					{ "prefer": "type-imports" }
+				]
+			}
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { Typography, Col, Row, Space, Card, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
@@ -191,4 +192,12 @@ export default function Home() {
       </Card>
     </Layout>
   );
+=======
+import { homepageContent } from '@whoiscoming-ui/contents/home-page';
+import { Footer } from '@whoiscoming-ui/ui/molecules';
+import { Layout } from '@whoiscoming-ui/ui/templates';
+
+export default function Home() {
+  return <Layout footer={<Footer />}>{homepageContent.title}</Layout>;
+>>>>>>> 78634c5 (Basic setup:)
 }

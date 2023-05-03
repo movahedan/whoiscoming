@@ -15,8 +15,11 @@
 # production
 /build
 
+<<<<<<< HEAD
 /.history
 
+=======
+>>>>>>> 78634c5 (Basic setup:)
 # misc
 .DS_Store
 *.pem

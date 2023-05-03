@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,3 +14,80 @@ button,
 [type="submit"] {
   background-color: #1677ff;
 } */
+=======
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  color: white;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.logo-shadow {
+  position: absolute;
+  width: 401px;
+  height: 401px;
+  background: #0E0220;
+  filter: blur(87.5px);
+  border-radius: 355px;
+  left: calc(50% - 401px/2 - 483.5px);
+  top: calc(50% - 401px/2 - 630.5px);
+}
+
+.moon-box {
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+  top: 13rem;
+  left: 8rem;
+}
+
+@media screen(md) {
+  .moon-box {
+    left: unset;
+    width: 40vw;
+    height: 40vw;
+    right: 0vw;
+    top: 10vw;  
+  }
+}
+
+@media screen(lg) {
+  .moon-box {
+    width: 40vw;
+    height: 40vw;
+    right: -5vw;
+    top: 5vw;  
+  }
+}
+
+@media screen(xl) {
+  .moon-box {
+    width: 597px;
+    height: 597px;
+    right: -150px;
+  }
+}
+
+.moon-shadow {
+  background: #0E0220;
+  filter: blur(87.5px);
+  border-radius: 355px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.moon {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 23%;
+  right: 20%;
+  box-shadow: inset 0px 0px 2px -20px #000000;
+}
+>>>>>>> 78634c5 (Basic setup:)

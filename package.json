@@ -12,10 +12,13 @@
     "generate": "plop --plopfile generators/component.generator.js"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@ant-design/icons": "^5.0.1",
     "@tanstack/react-query": "^4.29.5",
     "antd": "^5.4.7",
     "dayjs": "^1.11.7",
+=======
+>>>>>>> 78634c5 (Basic setup:)
     "next": "13.3.0",
     "next-seo": "^6.0.0",
     "react": "18.2.0",

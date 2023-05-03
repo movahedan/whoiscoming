@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import { Layout, Menu } from "antd";
 import {
@@ -67,3 +68,20 @@ const NavigationBar = ({ userEmail, onLogout }: NavbarProps) => {
 };
 
 export default NavigationBar;
+=======
+import { classNames } from '@whoiscoming-ui/utilities';
+
+import type { CSSProperties } from 'react';
+
+export type NavbarProps = {
+  style?: CSSProperties;
+  className?: string;
+};
+
+export const Navbar = ({ style, className }: NavbarProps) => (
+  <nav
+    style={style}
+    className={classNames(['flex items-center', className])}
+  ></nav>
+);
+>>>>>>> 78634c5 (Basic setup:)

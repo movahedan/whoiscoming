@@ -3,3 +3,24 @@
   @apply border rounded-lg outline-0;
   @apply transition-all duration-300;
 }
+<<<<<<< HEAD
+=======
+
+.outline {
+  @apply border-chain-blue hover:border-chain-blue-3 text-chain-blue hover:text-chain-blue-3;
+
+}
+
+.outline:hover {
+  box-shadow: 0px 0px 18px rgba(85, 127, 237, 0.39);
+}
+
+.default {
+  @apply border-chain-blue hover:border-chain-blue-7 bg-chain-blue hover:bg-chain-blue-7 text-dark-1 hover:text-chain-blue-1;
+
+}
+
+.default:hover {
+  filter: drop-shadow(0px 0px 18px rgba(85, 127, 237, 0.39));
+}
+>>>>>>> 78634c5 (Basic setup:)

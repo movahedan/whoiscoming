@@ -3,4 +3,8 @@
 }
 
 .hover:hover {
+<<<<<<< HEAD
+=======
+  @apply text-chain-red !important;
+>>>>>>> 78634c5 (Basic setup:)
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { classNames } from '@whoiscoming-ui/utilities';
 import React, { useEffect } from "react";
 import { Layout as AntLayout } from "antd";
@@ -9,6 +10,11 @@ import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "@whoiscoming-ui/constants";
 
 const { Content } = AntLayout;
+=======
+import { classNames } from '@whoiscoming-ui/utilities';
+
+import type { CSSProperties, FC, ReactNode } from 'react';
+>>>>>>> 78634c5 (Basic setup:)
 
 export type LayoutProps = {
   footer?: ReactNode;
@@ -18,6 +24,7 @@ export type LayoutProps = {
 };
 
 export const Layout: FC<LayoutProps> = ({
+<<<<<<< HEAD
   // footer,
   // style,
   // className,
@@ -69,3 +76,31 @@ export const Layout: FC<LayoutProps> = ({
     </AntLayout>
   );
 };
+=======
+  footer,
+  style,
+  className,
+  children,
+}) => (
+  <>
+    <div
+      className={classNames([
+        'flex flex-col flex-1 w-full min-h-screen overflow-hidden',
+      ])}
+    >
+      <main
+        style={style}
+        className={[
+          'relative flex-1 w-full mx-auto px-16 lg:max-w-7xl md:px-32',
+          className,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {children}
+      </main>
+      {footer}
+    </div>
+  </>
+);
+>>>>>>> 78634c5 (Basic setup:)

@@ -1,16 +1,6 @@
-import type { Dayjs } from "dayjs";
-import React from "react";
+import { Footer } from "@whoiscoming-ui/ui/molecules";
 import { Layout } from "@whoiscoming-ui/ui/templates";
-import {
-  Typography,
-  Slider,
-  Button,
-  Col,
-  Row,
-  Space,
-  Card,
-  Calendar,
-} from "antd";
+import { DatePicker, Slider, Button, Col, Row, Space, Card } from "antd";
 import type { SliderMarks } from "antd/es/slider";
 
 const style: React.CSSProperties = {
@@ -18,7 +8,7 @@ const style: React.CSSProperties = {
   height: 300,
   marginLeft: 70,
 };
-const { Text } = Typography;
+
 const marks: SliderMarks = {
   7: "07:00",
   8: "08:00",
@@ -33,27 +23,17 @@ const marks: SliderMarks = {
   17: "17:00",
   18: "18:00",
 };
-const onPanelChange = (value: Dayjs, mode: any) => {
-  console.log(value.format("YYYY-MM-DD"), mode);
-};
 
 export default function Home() {
- 
   return (
     <Layout>
-      <Card>
+      <Card style={{ width: 300 }}>
         <Row>
           <Col span={12}>
-            <Text>Choose day</Text>
-            <Calendar onPanelChange={onPanelChange} />
+            <DatePicker inputReadOnly />
           </Col>
           <Col span={12}>
-       
-        <Space
-            style={{ display: "flex", justifyContent: "center", width: "100%" }}
-            direction="vertical"
-          >
-             <Text>Choose time </Text>
+            {" "}
             <div style={style}>
               <Slider
                 vertical
@@ -66,16 +46,14 @@ export default function Home() {
                 defaultValue={[9, 17]}
               />
             </div>
-            </Space>
           </Col>
         </Row>
         <Row>
-
-          <Space
-            style={{ display: "flex", justifyContent: "center", width: "100%" }}
-          >
-            <Button size="large">Save</Button>
-          </Space>
+          <Col>
+            <Space wrap>
+              <Button type="primary">Save</Button>
+            </Space>
+          </Col>
         </Row>
       </Card>
     </Layout>

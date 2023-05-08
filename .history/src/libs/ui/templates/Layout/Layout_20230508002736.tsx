@@ -32,7 +32,7 @@ export const Layout: FC<LayoutProps> = ({
       suppressHydrationWarning
     >
         <Header>
-        <Menu mode="horizontal"  theme='dark' defaultSelectedKeys={['home']}>
+        <Menu mode="horizontal" defaultSelectedKeys={['home']}>
           <Menu.Item key="home"> 
             <Link href="/">
               Home
@@ -49,7 +49,7 @@ export const Layout: FC<LayoutProps> = ({
         </Menu> 
       </Header>
 
-      <Content style={{ padding: '20px',background:'white' }}>
+      <Content style={{ padding: '50px' }}>
         {children}
         </Content>
         {/* <Footer style={{ textAlign: 'center', marginTop:'80px' }}> ©2023  {footer}</Footer> */}

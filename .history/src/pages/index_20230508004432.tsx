@@ -2,7 +2,7 @@ import type { Dayjs } from "dayjs";
 import React from "react";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import {
-  Typography,
+  DatePicker,
   Slider,
   Button,
   Col,
@@ -10,6 +10,7 @@ import {
   Space,
   Card,
   Calendar,
+  theme,
 } from "antd";
 import type { SliderMarks } from "antd/es/slider";
 
@@ -18,7 +19,7 @@ const style: React.CSSProperties = {
   height: 300,
   marginLeft: 70,
 };
-const { Text } = Typography;
+
 const marks: SliderMarks = {
   7: "07:00",
   8: "08:00",
@@ -38,22 +39,21 @@ const onPanelChange = (value: Dayjs, mode: any) => {
 };
 
 export default function Home() {
- 
+  const { token } = theme.useToken();
+  const wrapperStyle: React.CSSProperties = {
+    width: 300,
+    border: `1px solid ${token.colorBorderSecondary}`,
+    borderRadius: token.borderRadiusLG,
+  };
   return (
     <Layout>
       <Card>
         <Row>
           <Col span={12}>
-            <Text>Choose day</Text>
+            {/* <DatePicker inputReadOnly  open/> */}
             <Calendar onPanelChange={onPanelChange} />
           </Col>
           <Col span={12}>
-       
-        <Space
-            style={{ display: "flex", justifyContent: "center", width: "100%" }}
-            direction="vertical"
-          >
-             <Text>Choose time </Text>
             <div style={style}>
               <Slider
                 vertical
@@ -66,12 +66,12 @@ export default function Home() {
                 defaultValue={[9, 17]}
               />
             </div>
-            </Space>
           </Col>
         </Row>
         <Row>
-
           <Space
+            direction="vertical"
+            size="middle"
             style={{ display: "flex", justifyContent: "center", width: "100%" }}
           >
             <Button size="large">Save</Button>

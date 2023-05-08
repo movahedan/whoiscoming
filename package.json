@@ -12,6 +12,9 @@
     "generate": "plop --plopfile generators/component.generator.js"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "antd": "^5.4.7",
+    "dayjs": "^1.11.7",
     "next": "13.3.0",
     "next-seo": "^6.0.0",
     "react": "18.2.0",

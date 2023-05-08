@@ -10,6 +10,7 @@ import {
   Space,
   Card,
   Calendar,
+  theme,
 } from "antd";
 import type { SliderMarks } from "antd/es/slider";
 
@@ -38,7 +39,12 @@ const onPanelChange = (value: Dayjs, mode: any) => {
 };
 
 export default function Home() {
- 
+  const { token } = theme.useToken();
+  const wrapperStyle: React.CSSProperties = {
+    width: 300,
+    border: `1px solid ${token.colorBorderSecondary}`,
+    borderRadius: token.borderRadiusLG,
+  };
   return (
     <Layout>
       <Card>
@@ -48,12 +54,8 @@ export default function Home() {
             <Calendar onPanelChange={onPanelChange} />
           </Col>
           <Col span={12}>
-       
-        <Space
-            style={{ display: "flex", justifyContent: "center", width: "100%" }}
-            direction="vertical"
-          >
-             <Text>Choose time </Text>
+        <Text>Choose time </Text>
+
             <div style={style}>
               <Slider
                 vertical
@@ -66,7 +68,6 @@ export default function Home() {
                 defaultValue={[9, 17]}
               />
             </div>
-            </Space>
           </Col>
         </Row>
         <Row>

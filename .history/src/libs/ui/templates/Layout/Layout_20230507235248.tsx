@@ -32,7 +32,7 @@ export const Layout: FC<LayoutProps> = ({
       suppressHydrationWarning
     >
         <Header>
-        <Menu mode="horizontal"  theme='dark' defaultSelectedKeys={['home']}>
+        <Menu mode="horizontal" theme="dark"  defaultSelectedKeys={['home']}>
           <Menu.Item key="home"> 
             <Link href="/">
               Home
@@ -43,16 +43,17 @@ export const Layout: FC<LayoutProps> = ({
                Overview
             </Link>
           </Menu.Item>
-          <Menu.Item key="user" icon={<UserOutlined/>} style={{ float: 'right'}} disabled>
-            danjelashehi@gmail.com
-          </Menu.Item>
+          
         </Menu> 
+        {/* <Menu.Item key="user" icon={<UserOutlined/>} style={{ float: 'right'}} disabled> */}
+            danjelashehi@gmail.com
+          {/* </Menu.Item> */}
       </Header>
 
-      <Content style={{ padding: '20px',background:'white' }}>
+      <Content style={{ padding: '0 50px' }}>
         {children}
         </Content>
-        {/* <Footer style={{ textAlign: 'center', marginTop:'80px' }}> ©2023  {footer}</Footer> */}
+        <Footer style={{ textAlign: 'center' }}> ©2023  {footer}</Footer>
 
     </AntLayout>
  

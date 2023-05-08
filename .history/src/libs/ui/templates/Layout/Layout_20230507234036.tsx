@@ -1,9 +1,6 @@
 // import { classNames } from '@whoiscoming-ui/utilities';
 import {   Layout as AntLayout, Menu } from 'antd';
 import Link from 'next/link';
-import {
- UserOutlined
-} from '@ant-design/icons';
 
 const { Header, Content, Footer } = AntLayout;
 
@@ -28,12 +25,14 @@ export const Layout: FC<LayoutProps> = ({
   return(
    
     <AntLayout
+      // className={classNames([
+      //   'flex flex-col flex-1 w-full min-h-screen overflow-hidden',
+      // ])}
       className="layout"
-      suppressHydrationWarning
     >
         <Header>
-        <Menu mode="horizontal"  theme='dark' defaultSelectedKeys={['home']}>
-          <Menu.Item key="home"> 
+        <Menu mode="horizontal">
+          <Menu.Item key="home">
             <Link href="/">
               Home
             </Link>
@@ -43,16 +42,13 @@ export const Layout: FC<LayoutProps> = ({
                Overview
             </Link>
           </Menu.Item>
-          <Menu.Item key="user" icon={<UserOutlined/>} style={{ float: 'right'}} disabled>
-            danjelashehi@gmail.com
-          </Menu.Item>
         </Menu> 
       </Header>
 
-      <Content style={{ padding: '20px',background:'white' }}>
+      <Content style={{ padding: '0 50px' }}>
         {children}
         </Content>
-        {/* <Footer style={{ textAlign: 'center', marginTop:'80px' }}> ©2023  {footer}</Footer> */}
+        <Footer style={{ textAlign: 'center' }}> ©2023  {footer}</Footer>
 
     </AntLayout>
  

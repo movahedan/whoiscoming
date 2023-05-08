@@ -19,25 +19,12 @@ const style: React.CSSProperties = {
   marginLeft: 70,
 };
 const { Text } = Typography;
-const marks: SliderMarks = {
-  7: "07:00",
-  8: "08:00",
-  9: "09:00",
-  10: "10:00",
-  11: "11:00",
-  12: "12:00",
-  13: "13:00",
-  14: "14:00",
-  15: "15:00",
-  16: "16:00",
-  17: "17:00",
-  18: "18:00",
-};
+ 
 const onPanelChange = (value: Dayjs, mode: any) => {
   console.log(value.format("YYYY-MM-DD"), mode);
 };
 
-export default function Home() {
+export default function Overview() {
  
   return (
     <Layout>
@@ -53,19 +40,7 @@ export default function Home() {
             style={{ display: "flex", justifyContent: "center", width: "100%" }}
             direction="vertical"
           >
-             <Text>Choose time </Text>
-            <div style={style}>
-              <Slider
-                vertical
-                range
-                step={1}
-                marks={marks}
-                reverse
-                min={7}
-                max={18}
-                defaultValue={[9, 17]}
-              />
-            </div>
+           
             </Space>
           </Col>
         </Row>
@@ -74,7 +49,7 @@ export default function Home() {
           <Space
             style={{ display: "flex", justifyContent: "center", width: "100%" }}
           >
-            <Button size="large">Save</Button>
+            <Button size="large" disabled>Save</Button>
           </Space>
         </Row>
       </Card>

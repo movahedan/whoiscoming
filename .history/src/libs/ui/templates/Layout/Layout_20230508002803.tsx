@@ -49,7 +49,7 @@ export const Layout: FC<LayoutProps> = ({
         </Menu> 
       </Header>
 
-      <Content style={{ padding: '20px',background:'white' }}>
+      <Content style={{ padding: '50px',background:'white' }}>
         {children}
         </Content>
         {/* <Footer style={{ textAlign: 'center', marginTop:'80px' }}> ©2023  {footer}</Footer> */}

@@ -44,6 +44,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
 
   console.log(email, userId);
 

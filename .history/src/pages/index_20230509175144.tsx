@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import {
   Typography,
   Slider,
@@ -11,12 +10,10 @@ import {
   Modal,
   Form,
   Input,
-  message,
 } from "antd";
-import dayjs from "dayjs";
-
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
 import { Layout } from "@whoiscoming-ui/ui/templates";
+import { useMutation } from "@tanstack/react-query";
 import type { SliderMarks } from "antd/es/slider";
 
 const { Title } = Typography;
@@ -35,18 +32,22 @@ const marks: SliderMarks = {
   18: "18:00",
 };
 
+const getHoursForDateEndpointMock = () =>
+  new Promise<[number, number]>((resolve) => {
+    const startHour = Math.random() * 5 + 7;
+    resolve([startHour, startHour + 4]);
+  });
+
+const submitHours = () => new Promise((resolve) => resolve(1));
 type RequiredMark = boolean | "optional";
 
 export default function Home() {
   const [hourRange, setHourRange] = useState<[number, number]>([9, 17]);
-  const [selectedDate, setDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [form] = Form.useForm();
-
   console.log(email, userId);
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -77,9 +78,9 @@ export default function Home() {
   };
 
   const userMutation = useMutation(
-    (values: any) => {
-      const { user } = values;
-      const URL = `http://localhost:3000/users`;
+    (user: any) => {
+      const URL = `http://localhost:3000/users/`;
+
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -89,65 +90,29 @@ export default function Home() {
       return fetch(URL, options);
     },
     {
-      onSuccess: async (data: any) => {
-        const result = await data.json();
-        localStorage.setItem("userId", result["_id"]);
-        localStorage.setItem("email", result["email"]);
-        message.success("User created successfully");
+      onSuccess: (data: any) => {
+        console.log("User created successfully:", data);
       },
-      onError: () => {
-        message.error("User not created");
+      onError: (error: any) => {
+        console.error("Error creating user:", error);
       },
     }
   );
 
-  const schedule = useMutation(
-    () => {
-      const URL = `http://localhost:3000/schedules`;
-      const date = selectedDate.split("-");
-      const options = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: localStorage.getItem("userId"),
-          day: Number(date[2]),
-          month: Number(date[1]),
-          year: Number(date[0]),
-          startHour: hourRange[0],
-          endHour: hourRange[1],
-        }),
-      };
-
-      return fetch(URL, options);
-    },
-    {
-      onSuccess: () => {
-        message.success("Schedule created successfully");
-      },
-      onError: () => {
-        message.error("Error creating schedule");
-      },
-    }
-  );
-
-  const onSave = () => {
-    schedule.mutate();
-  };
-  console.log({ selectedDate, hourRange });
+  const onSave = () => submitHours();
   const onFinish = (values: any) => {
-    userMutation.mutate(values);
-    localStorage.setItem("email", values.email);
+    console.log("Form submitted with values:", values);
     setIsModalOpen(false);
   };
 
   const onSelect = (value: string) => {
-    setDate(value);
+    console.log(value);
+    getHoursForDateEndpointMock().then(setHourRange);
   };
 
   React.useEffect(() => {
     const storedEmail = localStorage.getItem("email");
     const storedUserId = localStorage.getItem("userId");
-
     if (!storedEmail || !storedUserId) {
       showModal();
     } else {
@@ -210,7 +175,6 @@ export default function Home() {
           </Col>
         </Row>
       </Card>
-
       <Modal
         title="Enter your information"
         open={isModalOpen}

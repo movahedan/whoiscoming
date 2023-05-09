@@ -5,17 +5,17 @@ import {
   Calendar as AntCalendar,
   Select,
   Button,
-} from "antd";
-import dayjs from "dayjs";
-import React, { useState } from "react";
+} from 'antd';
+import dayjs from 'dayjs';
+import React, { useState } from 'react';
 
-import { classNames, formatDate } from "@whoiscoming-ui/utilities";
+import { classNames, formatDate } from '@whoiscoming-ui/utilities';
 
-import styles from "./Calendar.module.css";
+import styles from './Calendar.module.css';
 
-import type { CalendarProps as AntCalendarProps } from "antd";
-import type { Dayjs } from "dayjs";
-import type { CSSProperties } from "react";
+import type { CalendarProps as AntCalendarProps } from 'antd';
+import type { Dayjs } from 'dayjs';
+import type { CSSProperties } from 'react';
 
 export type CalendarProps = {
   dataTestId: string;
@@ -23,13 +23,13 @@ export type CalendarProps = {
   style?: CSSProperties;
   className?: string;
 
-  onPanelChange?: AntCalendarProps<Dayjs>["onPanelChange"];
+  onPanelChange?: AntCalendarProps<Dayjs>['onPanelChange'];
   onSelect?: (date: string) => void;
 };
 
 export const Calendar = ({
-  as: As = "div",
-  dataTestId = "Calendar",
+  as: As = 'div',
+  dataTestId = 'Calendar',
   style,
   className,
   onSelect,
@@ -49,12 +49,12 @@ export const Calendar = ({
       className={classNames([styles.wrapper, className])}
     >
       <AntCalendar
-        mode="month"
+        mode='month'
         fullscreen={false}
         value={currentDate}
         onSelect={handleSelect}
         onPanelChange={onPanelChange}
-        headerRender={({ value, onChange }: { value: any; onChange: any }) => {
+        headerRender={({ value, onChange }) => {
           const start = 0;
           const end = 12;
           const monthOptions = [];
@@ -69,7 +69,7 @@ export const Calendar = ({
 
           for (let i = start; i < end; i++) {
             monthOptions.push(
-              <Select.Option key={i} value={i} className="month-item">
+              <Select.Option key={i} value={i} className='month-item'>
                 {months[i]}
               </Select.Option>
             );
@@ -87,7 +87,7 @@ export const Calendar = ({
                 <Col>
                   <Select
                     dropdownMatchSelectWidth={false}
-                    className="my-year-select"
+                    className='my-year-select'
                     value={year}
                     onChange={(newYear) => {
                       const now = value.clone().year(newYear);
@@ -95,7 +95,7 @@ export const Calendar = ({
                     }}
                   >
                     {yearOptions.map((i) => (
-                      <Select.Option key={i} value={i} className="year-item">
+                      <Select.Option key={i} value={i} className='year-item'>
                         {i}
                       </Select.Option>
                     ))}
@@ -115,7 +115,7 @@ export const Calendar = ({
                 </Col>
                 <Col>
                   <Button
-                    data-testid="calendar-today-button"
+                    data-testid='calendar-today-button'
                     onClick={() => handleSelect(dayjs())}
                   >
                     Today

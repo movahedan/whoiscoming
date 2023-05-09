@@ -22,7 +22,9 @@ export const Layout: FC<LayoutProps> = ({
   children,
 }) => {
   const [email, setEmail] = React.useState("");
-
+  if (typeof window !== "undefined") {
+    // Perform localStorage action
+  }
   useEffect(() => {
     setEmail(localStorage.getItem("email") || "");
   }, []);

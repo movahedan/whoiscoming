@@ -1,5 +1,4 @@
 // import { classNames } from '@whoiscoming-ui/utilities';
-import React, { useEffect } from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { Layout as AntLayout, Menu } from "antd";
 import Link from "next/link";
@@ -21,11 +20,12 @@ export const Layout: FC<LayoutProps> = ({
   // className,
   children,
 }) => {
-  const [email, setEmail] = React.useState("");
+  // const user = localStorage ? localStorage.getItem("email") : "";
 
-  useEffect(() => {
-    setEmail(localStorage.getItem("email") || "");
-  }, []);
+  if (typeof window !== "undefined") {
+    // Perform localStorage action
+    const email = localStorage.getItem("email");
+  }
   return (
     <AntLayout className="layout" suppressHydrationWarning>
       <Header>
@@ -42,7 +42,7 @@ export const Layout: FC<LayoutProps> = ({
             style={{ float: "right" }}
             disabled
           >
-            {email}
+            {localStorage.getItem("email")}
           </Menu.Item>
         </Menu>
       </Header>

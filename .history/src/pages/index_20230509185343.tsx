@@ -93,10 +93,9 @@ export default function Home() {
         const result = await data.json();
         localStorage.setItem("userId", result["_id"]);
         localStorage.setItem("email", result["email"]);
-        message.success("User created successfully");
       },
-      onError: () => {
-        message.error("User not created");
+      onError: (error: any) => {
+        console.error("Error creating user:", error);
       },
     }
   );
@@ -121,11 +120,11 @@ export default function Home() {
       return fetch(URL, options);
     },
     {
-      onSuccess: () => {
-        message.success("Schedule created successfully");
+      onSuccess: (data: any) => {
+        console.log("schedule created successfully:", data);
       },
-      onError: () => {
-        message.error("Error creating schedule");
+      onError: (error: any) => {
+        console.error("Error creating schedule:", error);
       },
     }
   );
@@ -135,13 +134,16 @@ export default function Home() {
   };
   console.log({ selectedDate, hourRange });
   const onFinish = (values: any) => {
+    console.log("Form submitted with values:", values);
     userMutation.mutate(values);
     localStorage.setItem("email", values.email);
     setIsModalOpen(false);
   };
 
   const onSelect = (value: string) => {
+    console.log("onSelect", value);
     setDate(value);
+    // getHoursForDateEndpointMock().then(setHourRange);
   };
 
   React.useEffect(() => {

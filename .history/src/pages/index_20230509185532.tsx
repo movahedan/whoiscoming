@@ -44,6 +44,7 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
 
   console.log(email, userId);
 
@@ -93,10 +94,17 @@ export default function Home() {
         const result = await data.json();
         localStorage.setItem("userId", result["_id"]);
         localStorage.setItem("email", result["email"]);
-        message.success("User created successfully");
+
+        messageApi.open({
+          type: "success",
+          content: "User created successfully",
+        });
       },
       onError: () => {
-        message.error("User not created");
+        messageApi.open({
+          type: "error",
+          content: "User not created",
+        });
       },
     }
   );
@@ -122,10 +130,16 @@ export default function Home() {
     },
     {
       onSuccess: () => {
-        message.success("Schedule created successfully");
+        messageApi.open({
+          type: "success",
+          content: "Schedule created successfully",
+        });
       },
       onError: () => {
-        message.error("Error creating schedule");
+        messageApi.open({
+          type: "error",
+          content: "Error creating schedule",
+        });
       },
     }
   );

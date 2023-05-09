@@ -11,10 +11,7 @@ import {
   Modal,
   Form,
   Input,
-  message,
 } from "antd";
-import dayjs from "dayjs";
-
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import type { SliderMarks } from "antd/es/slider";
@@ -35,11 +32,16 @@ const marks: SliderMarks = {
   18: "18:00",
 };
 
+const getHoursForDateEndpointMock = () =>
+  new Promise<[number, number]>((resolve) => {
+    const startHour = Math.random() * 5 + 7;
+    resolve([startHour, startHour + 4]);
+  });
+
 type RequiredMark = boolean | "optional";
 
 export default function Home() {
   const [hourRange, setHourRange] = useState<[number, number]>([9, 17]);
-  const [selectedDate, setDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
@@ -80,6 +82,7 @@ export default function Home() {
     (values: any) => {
       const { user } = values;
       const URL = `http://localhost:3000/users`;
+      console.log(111, user);
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -91,57 +94,52 @@ export default function Home() {
     {
       onSuccess: async (data: any) => {
         const result = await data.json();
+        console.log("User created successfully:", result["_id"]);
         localStorage.setItem("userId", result["_id"]);
-        localStorage.setItem("email", result["email"]);
-        message.success("User created successfully");
       },
-      onError: () => {
-        message.error("User not created");
+      onError: (error: any) => {
+        console.error("Error creating user:", error);
       },
     }
   );
 
   const schedule = useMutation(
-    () => {
-      const URL = `http://localhost:3000/schedules`;
-      const date = selectedDate.split("-");
+    (user: any) => {
+      const URL = `http://localhost:3000/schedule/`;
+
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: localStorage.getItem("userId"),
-          day: Number(date[2]),
-          month: Number(date[1]),
-          year: Number(date[0]),
-          startHour: hourRange[0],
-          endHour: hourRange[1],
-        }),
+        body: JSON.stringify(user),
       };
 
       return fetch(URL, options);
     },
     {
-      onSuccess: () => {
-        message.success("Schedule created successfully");
+      onSuccess: (data: any) => {
+        console.log("User created successfully:", data);
+        localStorage.setItem("userId", data.id);
       },
-      onError: () => {
-        message.error("Error creating schedule");
+      onError: (error: any) => {
+        console.error("Error creating user:", error);
       },
     }
   );
 
   const onSave = () => {
-    schedule.mutate();
+    schedule.mutate({});
   };
-  console.log({ selectedDate, hourRange });
+
   const onFinish = (values: any) => {
+    console.log("Form submitted with values:", values);
     userMutation.mutate(values);
     localStorage.setItem("email", values.email);
     setIsModalOpen(false);
   };
 
   const onSelect = (value: string) => {
-    setDate(value);
+    console.log(value);
+    getHoursForDateEndpointMock().then(setHourRange);
   };
 
   React.useEffect(() => {
@@ -210,7 +208,6 @@ export default function Home() {
           </Col>
         </Row>
       </Card>
-
       <Modal
         title="Enter your information"
         open={isModalOpen}

@@ -54,7 +54,7 @@ export const Calendar = ({
         value={currentDate}
         onSelect={handleSelect}
         onPanelChange={onPanelChange}
-        headerRender={({ value, onChange }: { value: any; onChange: any }) => {
+        headerRender={({ value, onChange }: { value: any }) => {
           const start = 0;
           const end = 12;
           const monthOptions = [];

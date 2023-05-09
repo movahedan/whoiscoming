@@ -1,5 +1,5 @@
 // import { classNames } from '@whoiscoming-ui/utilities';
-import React, { useEffect } from "react";
+import React from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { Layout as AntLayout, Menu } from "antd";
 import Link from "next/link";
@@ -22,10 +22,10 @@ export const Layout: FC<LayoutProps> = ({
   children,
 }) => {
   const [email, setEmail] = React.useState("");
-
-  useEffect(() => {
+  if (typeof window !== "undefined") {
+    // Perform localStorage action
     setEmail(localStorage.getItem("email") || "");
-  }, []);
+  }
   return (
     <AntLayout className="layout" suppressHydrationWarning>
       <Header>

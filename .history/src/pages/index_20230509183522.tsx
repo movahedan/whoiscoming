@@ -11,10 +11,7 @@ import {
   Modal,
   Form,
   Input,
-  message,
 } from "antd";
-import dayjs from "dayjs";
-
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import type { SliderMarks } from "antd/es/slider";
@@ -39,7 +36,7 @@ type RequiredMark = boolean | "optional";
 
 export default function Home() {
   const [hourRange, setHourRange] = useState<[number, number]>([9, 17]);
-  const [selectedDate, setDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [selectedDate, setDate] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
@@ -93,55 +90,50 @@ export default function Home() {
         const result = await data.json();
         localStorage.setItem("userId", result["_id"]);
         localStorage.setItem("email", result["email"]);
-        message.success("User created successfully");
       },
-      onError: () => {
-        message.error("User not created");
+      onError: (error: any) => {
+        console.error("Error creating user:", error);
       },
     }
   );
 
   const schedule = useMutation(
-    () => {
-      const URL = `http://localhost:3000/schedules`;
-      const date = selectedDate.split("-");
+    (schedule: any) => {
+      const URL = `http://localhost:3000/schedule/`;
+
       const options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: localStorage.getItem("userId"),
-          day: Number(date[2]),
-          month: Number(date[1]),
-          year: Number(date[0]),
-          startHour: hourRange[0],
-          endHour: hourRange[1],
-        }),
+        body: JSON.stringify({ userId: localStorage.getItem("userId") }),
       };
 
       return fetch(URL, options);
     },
     {
-      onSuccess: () => {
-        message.success("Schedule created successfully");
+      onSuccess: (data: any) => {
+        console.log("User created successfully:", data);
       },
-      onError: () => {
-        message.error("Error creating schedule");
+      onError: (error: any) => {
+        console.error("Error creating user:", error);
       },
     }
   );
 
   const onSave = () => {
-    schedule.mutate();
+    schedule.mutate({});
   };
-  console.log({ selectedDate, hourRange });
+  console.log(selectedDate, hourRange);
   const onFinish = (values: any) => {
+    console.log("Form submitted with values:", values);
     userMutation.mutate(values);
     localStorage.setItem("email", values.email);
     setIsModalOpen(false);
   };
 
   const onSelect = (value: string) => {
+    console.log("onSelect", value);
     setDate(value);
+    // getHoursForDateEndpointMock().then(setHourRange);
   };
 
   React.useEffect(() => {

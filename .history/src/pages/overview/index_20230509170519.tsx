@@ -1,9 +1,19 @@
 import type { Dayjs } from "dayjs";
 import React from "react";
 import { Layout } from "@whoiscoming-ui/ui/templates";
-import { Table, Col, Row, Space, Card, Calendar } from "antd";
+import {
+  Typography,
+  Table,
+  Button,
+  Col,
+  Row,
+  Space,
+  Card,
+  Calendar,
+} from "antd";
 import { useQuery } from "@tanstack/react-query";
 
+const { Text } = Typography;
 interface IDate {
   day: number;
   month: number;
@@ -33,15 +43,22 @@ export default function Overview() {
     year: 2023,
   });
 
+  //We will probably not talk much about options this article, but here is an example one
+  const options = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  };
+
   const query = useQuery({
     queryKey: ["whoiscoming", selectedDay],
     queryFn: async () => {
-      const URL = `http://localhost:3000/schedules/${selectedDay.day}/${selectedDay.month}/${selectedDay.year}`;
-
-      const options = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
+      const URL =
+        "http://localhost:3000/schedules/" +
+        selectedDay.day +
+        "/" +
+        selectedDay.month +
+        "/" +
+        selectedDay.year;
 
       const response = await fetch(URL, options);
       const jsonData = await response.json();
@@ -86,7 +103,6 @@ export default function Overview() {
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                paddingTop: "16px",
               }}
               direction="vertical"
             >
@@ -96,8 +112,18 @@ export default function Overview() {
                 pagination={{ hideOnSinglePage: true }}
                 loading={query.isLoading}
               />
+              ;
             </Space>
           </Col>
+        </Row>
+        <Row>
+          <Space
+            style={{ display: "flex", justifyContent: "center", width: "100%" }}
+          >
+            <Button size="large" disabled>
+              Save
+            </Button>
+          </Space>
         </Row>
       </Card>
     </Layout>

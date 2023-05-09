@@ -33,15 +33,16 @@ export default function Overview() {
     year: 2023,
   });
 
+  //We will probably not talk much about options this article, but here is an example one
+  const options = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  };
+
   const query = useQuery({
     queryKey: ["whoiscoming", selectedDay],
     queryFn: async () => {
       const URL = `http://localhost:3000/schedules/${selectedDay.day}/${selectedDay.month}/${selectedDay.year}`;
-
-      const options = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
 
       const response = await fetch(URL, options);
       const jsonData = await response.json();
@@ -96,6 +97,7 @@ export default function Overview() {
                 pagination={{ hideOnSinglePage: true }}
                 loading={query.isLoading}
               />
+              ;
             </Space>
           </Col>
         </Row>

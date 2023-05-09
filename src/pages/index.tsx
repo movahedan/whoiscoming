@@ -1,25 +1,25 @@
-import { Typography, Slider, Button, Col, Row, Space, Card } from 'antd';
-import React, { useState } from 'react';
+import { Typography, Slider, Button, Col, Row, Space, Card } from "antd";
+import React, { useState } from "react";
 
-import { Calendar } from '@whoiscoming-ui/ui/organisms';
-import { Layout } from '@whoiscoming-ui/ui/templates';
+import { Calendar } from "@whoiscoming-ui/ui/organisms";
+import { Layout } from "@whoiscoming-ui/ui/templates";
 
-import type { SliderMarks } from 'antd/es/slider';
+import type { SliderMarks } from "antd/es/slider";
 
 const { Title } = Typography;
 const marks: SliderMarks = {
-  7: '07:00',
-  8: '08:00',
-  9: '09:00',
-  10: '10:00',
-  11: '11:00',
-  12: '12:00',
-  13: '13:00',
-  14: '14:00',
-  15: '15:00',
-  16: '16:00',
-  17: '17:00',
-  18: '18:00',
+  7: "07:00",
+  8: "08:00",
+  9: "09:00",
+  10: "10:00",
+  11: "11:00",
+  12: "12:00",
+  13: "13:00",
+  14: "14:00",
+  15: "15:00",
+  16: "16:00",
+  17: "17:00",
+  18: "18:00",
 };
 
 const getHoursForDateEndpointMock = () =>
@@ -44,23 +44,23 @@ export default function Home() {
       <Card>
         <Row>
           <Col span={12}>
-            <Calendar dataTestId='modify-page-calendar' onSelect={onSelect} />
+            <Calendar dataTestId="modify-page-calendar" onSelect={onSelect} />
           </Col>
           <Col span={12}>
             <Space
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100%',
+                display: "flex",
+                justifyContent: "center",
+                width: "100%",
                 padding: 8,
               }}
-              direction='vertical'
-              size={'large'}
+              direction="vertical"
+              size={"large"}
             >
               <Title level={4}>Choose time </Title>
               <div
                 style={{
-                  display: 'inline-block',
+                  display: "inline-block",
                   height: 460,
                   marginLeft: 48,
                 }}
@@ -77,13 +77,13 @@ export default function Home() {
                   onChange={(value) => setHourRange(value)}
                 />
               </div>
-              <Space size='middle'>
-                <Button size='large' type='default' onClick={onSave}>
+              <Space size="middle">
+                <Button size="large" type="default" onClick={onSave}>
                   Save
                 </Button>
                 <Button
-                  size='large'
-                  type='ghost'
+                  size="large"
+                  type="ghost"
                   onClick={() => setHourRange([0, 0])}
                 >
                   Reset

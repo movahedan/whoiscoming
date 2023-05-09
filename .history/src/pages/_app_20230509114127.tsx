@@ -1,6 +1,12 @@
 import "../globals.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DefaultSeo } from "next-seo";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 import { getDefaultNextSeoConfig } from "@whoiscoming-ui/constants";
 import { ErrorBoundary } from "@whoiscoming-ui/ui/utilities";

@@ -42,7 +42,6 @@ export default function Overview() {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       };
-
       const response = await fetch(URL, options);
       const jsonData = await response.json();
       return jsonData.data;
@@ -96,6 +95,7 @@ export default function Overview() {
                 pagination={{ hideOnSinglePage: true }}
                 loading={query.isLoading}
               />
+              ;
             </Space>
           </Col>
         </Row>

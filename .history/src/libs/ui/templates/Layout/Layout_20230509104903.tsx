@@ -1,11 +1,11 @@
 // import { classNames } from '@whoiscoming-ui/utilities';
-import { UserOutlined } from "@ant-design/icons";
-import { Layout as AntLayout, Menu } from "antd";
-import Link from "next/link";
+import { UserOutlined } from '@ant-design/icons';
+import { Layout as AntLayout, Menu } from 'antd';
+import Link from 'next/link';
 
-import type { CSSProperties, FC, ReactNode } from "react";
+import type { CSSProperties, FC, ReactNode } from 'react';
 
-const { Header, Content } = AntLayout;
+const { Header, Content, Footer } = AntLayout;
 
 export type LayoutProps = {
   footer?: ReactNode;
@@ -15,25 +15,25 @@ export type LayoutProps = {
 };
 
 export const Layout: FC<LayoutProps> = ({
-  // footer,
+  footer,
   // style,
   // className,
   children,
 }) => {
   return (
-    <AntLayout className="layout" suppressHydrationWarning>
+    <AntLayout className='layout' suppressHydrationWarning>
       <Header>
-        <Menu mode="horizontal" theme="dark" defaultSelectedKeys={["home"]}>
-          <Menu.Item key="home">
-            <Link href="/">Home</Link>
+        <Menu mode='horizontal' theme='dark' defaultSelectedKeys={['home']}>
+          <Menu.Item key='home'>
+            <Link href='/'>Home</Link>
           </Menu.Item>
-          <Menu.Item key="Overview">
-            <Link href="/overview">Overview</Link>
+          <Menu.Item key='Overview'>
+            <Link href='/overview'>Overview</Link>
           </Menu.Item>
           <Menu.Item
-            key="user"
+            key='user'
             icon={<UserOutlined />}
-            style={{ float: "right" }}
+            style={{ float: 'right' }}
             disabled
           >
             danjelashehi@gmail.com
@@ -41,7 +41,7 @@ export const Layout: FC<LayoutProps> = ({
         </Menu>
       </Header>
 
-      <Content style={{ padding: "20px", background: "white" }}>
+      <Content style={{ padding: '20px', background: 'white' }}>
         {children}
       </Content>
       {/* <Footer style={{ textAlign: 'center', marginTop:'80px' }}> ©2023  {footer}</Footer> */}

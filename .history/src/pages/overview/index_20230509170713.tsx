@@ -96,6 +96,7 @@ export default function Overview() {
                 pagination={{ hideOnSinglePage: true }}
                 loading={query.isLoading}
               />
+              ;
             </Space>
           </Col>
         </Row>

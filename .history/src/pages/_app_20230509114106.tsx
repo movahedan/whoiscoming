@@ -1,6 +1,12 @@
 import "../globals.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DefaultSeo } from "next-seo";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 import { getDefaultNextSeoConfig } from "@whoiscoming-ui/constants";
 import { ErrorBoundary } from "@whoiscoming-ui/ui/utilities";
@@ -14,8 +20,6 @@ export const reportWebVitals = (metric: NextWebVitalsMetric): void => {
   }
 };
 
-const queryClient = new QueryClient();
-
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary>
@@ -24,9 +28,7 @@ export default function App({ Component, pageProps }: AppProps) {
           noIndex: false,
         })}
       />
-      <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
-      </QueryClientProvider>
+      <Component {...pageProps} />
     </ErrorBoundary>
   );
 }

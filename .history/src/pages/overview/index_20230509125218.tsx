@@ -1,15 +1,40 @@
 import type { Dayjs } from "dayjs";
 import React from "react";
 import { Layout } from "@whoiscoming-ui/ui/templates";
-import { Table, Col, Row, Space, Card, Calendar } from "antd";
+import {
+  Typography,
+  Table,
+  Button,
+  Col,
+  Row,
+  Space,
+  Card,
+  Calendar,
+} from "antd";
 import { useQuery } from "@tanstack/react-query";
 
+const { Text } = Typography;
 interface IDate {
   day: number;
   month: number;
   year: number;
 }
 export default function Overview() {
+  const dataSource = [
+    {
+      key: "1",
+      name: "Mike",
+      age: 32,
+      address: "Eindhoven",
+    },
+    {
+      key: "2",
+      name: "John",
+      age: 42,
+      address: "Amsterdam",
+    },
+  ];
+
   const columns = [
     {
       title: "Name",
@@ -17,18 +42,18 @@ export default function Overview() {
       key: "name",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
     },
     {
-      title: "Hours",
-      dataIndex: "hours",
-      key: "hours",
+      title: "Office",
+      dataIndex: "address",
+      key: "address",
     },
   ];
   const [selectedDay, setSelectedDay] = React.useState<IDate>({
-    day: 1,
+    day: 0,
     month: 1,
     year: 2023,
   });
@@ -36,33 +61,23 @@ export default function Overview() {
   const query = useQuery({
     queryKey: ["whoiscoming", selectedDay],
     queryFn: async () => {
-      const URL = `http://localhost:3000/schedules/${selectedDay.day}/${selectedDay.month}/${selectedDay.year}`;
-
-      const options = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
-
-      const response = await fetch(URL, options);
+      const response = await fetch(
+        "/localhost:3000" +
+          selectedDay.day +
+          "/" +
+          selectedDay.month +
+          "/" +
+          selectedDay.year
+      );
       const jsonData = await response.json();
-      return jsonData.data;
+      return jsonData;
     },
   });
 
-  const dataSource = (query.data || []).map((item: any) => {
-    return {
-      name: item.user.name,
-      email: item.user.email,
-      id: item.user.id,
-      hours: `${item.startHour}:00 - ${item.endHour}:00 `,
-    };
-  });
+  const onPanelChange = (value: Dayjs, mode: any) => {
+    console.log(value.format("YYYY-MM-DD"), mode);
+  };
 
-  // const onPanelChange = (value: Dayjs, mode: any) => {
-  //   console.log(value.format("YYYY-MM-DD"), mode);
-  // };
-
-  console.log({ dataSource }, query.data);
   const onDaySelect = (value: Dayjs) => {
     console.log(value.format("YYYY-MM-DD"));
     const fullDate = value.format("YYYY-MM-DD").split("-");
@@ -73,31 +88,37 @@ export default function Overview() {
     });
   };
 
+  console.log(query);
+
   return (
     <Layout>
       <Card>
         <Row>
-          <Col span={10} style={{ padding: "16px" }}>
-            <Calendar onSelect={onDaySelect} />
+          <Col span={10}>
+            <Text>Choose day</Text>
+            <Calendar onPanelChange={onPanelChange} onSelect={onDaySelect} />
           </Col>
-          <Col span={12} style={{ padding: "16px" }}>
+          <Col span={12}>
             <Space
               style={{
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                paddingTop: "16px",
               }}
               direction="vertical"
             >
-              <Table
-                dataSource={dataSource}
-                columns={columns}
-                pagination={{ hideOnSinglePage: true }}
-                loading={query.isLoading}
-              />
+              <Table dataSource={dataSource} columns={columns} />;
             </Space>
           </Col>
+        </Row>
+        <Row>
+          <Space
+            style={{ display: "flex", justifyContent: "center", width: "100%" }}
+          >
+            <Button size="large" disabled>
+              Save
+            </Button>
+          </Space>
         </Row>
       </Card>
     </Layout>

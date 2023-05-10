@@ -20,20 +20,20 @@ import { Calendar } from "@whoiscoming-ui/ui/organisms";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import type { SliderMarks } from "antd/es/slider";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const marks: SliderMarks = {
-  7: "07:00",
-  8: "08:00",
-  9: "09:00",
-  10: "10:00",
-  11: "11:00",
-  12: "12:00",
-  13: "13:00",
-  14: "14:00",
-  15: "15:00",
-  16: "16:00",
-  17: "17:00",
-  18: "18:00",
+  7: "07",
+  8: "08",
+  9: "09",
+  10: "10",
+  11: "11",
+  12: "12",
+  13: "13",
+  14: "14",
+  15: "15",
+  16: "16",
+  17: "17",
+  18: "18",
 };
 interface IDate {
   day: number;
@@ -43,47 +43,15 @@ interface IDate {
   endHour?: string;
 }
 
-type RequiredMark = boolean | "optional";
 const queryClient = new QueryClient();
 
+
 export default function Home() {
-  const [hourRange, setHourRange] = useState<[number, number]>([9, 17]);
+  const [hourRange, setHourRange] = useState<[number, number]>([0, 0]);
+  const [imNotComing, setImNotComing] = useState(true);
   const [selectedDate, setDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [userId, setUserId] = useState("");
   const [existingSchedule, setExistingSchedule] = useState(null);
-  const [form] = Form.useForm();
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    form.submit();
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-  const [requiredMark, setRequiredMarkType] =
-    useState<RequiredMark>("optional");
-
-  const onRequiredTypeChange = ({
-    requiredMarkValue,
-  }: {
-    requiredMarkValue: RequiredMark;
-  }) => {
-    setRequiredMarkType(requiredMarkValue);
-  };
-
-  const validateMessages = {
-    required: "${label} is required!",
-    types: {
-      email: "${label} is not a valid email!",
-    },
-  };
+  const defaultRange: [number, number] = [9, 17];
 
   const createScheduleMutation = useMutation(
     () => {
@@ -117,40 +85,12 @@ export default function Home() {
     }
   );
 
-  const onSave = () => {
+  const onSave = (hourRange: [number, number]) => {
     createScheduleMutation.mutate();
+    setImNotComing(hourRange[0] === 0);
   };
 
-  const userCreateMutation = useMutation(
-    (values: any) => {
-      const { user } = values;
-      const URL = `http://localhost:3000/users`;
-      const options = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(user),
-      };
-
-      return fetch(URL, options);
-    },
-    {
-      onSuccess: async (data: any) => {
-        const result = await data.json();
-        localStorage.setItem("userId", result["_id"]);
-        localStorage.setItem("email", result["email"]);
-        message.success("User created successfully");
-      },
-      onError: () => {
-        message.error("User not created");
-      },
-    }
-  );
-  const onCreateUser = (values: any) => {
-    userCreateMutation.mutate(values);
-    localStorage.setItem("email", values.email);
-    setIsModalOpen(false);
-  };
-
+  
   const scheduleQuery = useQuery({
     queryKey: ["schedules/user/", userId],
     queryFn: () =>
@@ -173,6 +113,8 @@ export default function Home() {
           setHourRange([Number(item.startHour), Number(item.endHour)]);
           return true;
         }
+        
+        return false;
       });
 
       scheduledItem.length >= 1
@@ -216,16 +158,6 @@ export default function Home() {
 
   const handleUpdateTime = () => {};
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem("email");
-    const storedUserId = localStorage.getItem("userId");
-
-    if (!storedEmail || !storedUserId) {
-      showModal();
-    } else {
-      setUserId(storedUserId);
-    }
-  }, []);
 
   useEffect(() => {
     setDayUserSchedule(selectedDate);
@@ -239,36 +171,57 @@ export default function Home() {
             <Calendar dataTestId="modify-page-calendar" onSelect={onSelect} />
           </Col>
           <Col span={12}>
+            {imNotComing ? (
+              <Text>{'Not ganna be there'}</Text>
+            ) : (
+              <Text>{"I'm coming!"}</Text>
+            )}
+          </Col>
+          <Col span={12}>
+            <Title level={4} className='p-8'>
+              Choose time{' '}
+            </Title>
             <Space
               style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
-                padding: 8,
+                display: 'flex',
+                justifyContent: 'center',
+                width: '90%',
+                margin: 'auto',
               }}
-              direction="vertical"
-              size={"large"}
+              direction='vertical'
             >
-              <Title level={4}>Choose time </Title>
-              <div
-                style={{
-                  display: "inline-block",
-                  height: 460,
-                  marginLeft: 48,
-                }}
+              <Slider
+                range
+                step={1}
+                marks={marks}
+                min={7}
+                max={18}
+                value={hourRange}
+                onChange={(value) => setHourRange(value)}
+              />
+            </Space>
+            <Space size='middle' className='p-8'>
+              <Button
+                size='large'
+                type='default'
+                onClick={() => onSave([0, 0])}
               >
-                <Slider
-                  vertical
-                  range
-                  step={1}
-                  marks={marks}
-                  reverse
-                  min={7}
-                  max={18}
-                  value={hourRange}
-                  onChange={(value) => setHourRange(value)}
-                />
-              </div>
+                {"I'm not going anywhere"}
+              </Button>
+              <Button
+                size='large'
+                type='default'
+                onClick={() => onSave(hourRange)}
+              >
+                Save
+              </Button>
+              <Button
+                size='large'
+                type='ghost'
+                onClick={() => setHourRange([0, 0])}
+              >
+                Reset
+              </Button>
             </Space>
           </Col>
         </Row>
@@ -309,7 +262,7 @@ export default function Home() {
                 <Button
                   size="large"
                   type="default"
-                  onClick={onSave}
+                  onClick={() => onSave(hourRange)}
                   loading={createScheduleMutation.isLoading}
                   disabled={
                     createScheduleMutation.isLoading || !!existingSchedule
@@ -333,41 +286,6 @@ export default function Home() {
           </Space>
         </Row>
       </Card>
-
-      <Modal
-        title="Enter your information"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={{ requiredMarkValue: requiredMark }}
-          onValuesChange={onRequiredTypeChange}
-          requiredMark={requiredMark}
-          validateMessages={validateMessages}
-          onFinish={onCreateUser}
-        >
-          <Form.Item
-            label="Full name"
-            required
-            tooltip="This is a required field"
-            name={["user", "name"]}
-          >
-            <Input placeholder="Full name" />
-          </Form.Item>
-          <Form.Item
-            name={["user", "email"]}
-            rules={[{ type: "email" }]}
-            label="Email"
-            required
-            tooltip="This is a required field"
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
     </Layout>
   );
 }

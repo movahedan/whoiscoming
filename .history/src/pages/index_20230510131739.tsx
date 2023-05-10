@@ -35,13 +35,6 @@ const marks: SliderMarks = {
   17: "17:00",
   18: "18:00",
 };
-interface IDate {
-  day: number;
-  month: number;
-  year: number;
-  startHour?: string;
-  endHour?: string;
-}
 
 type RequiredMark = boolean | "optional";
 const queryClient = new QueryClient();
@@ -108,7 +101,7 @@ export default function Home() {
       onSuccess: () => {
         message.success("Schedule created successfully");
         queryClient.invalidateQueries({
-          queryKey: ["schedules", "schedules/user/"],
+          queryKey: ["schedules", userId],
         });
       },
       onError: () => {
@@ -160,11 +153,13 @@ export default function Home() {
     enabled: !!userId,
   });
 
-  const setDayUserSchedule = (dateValue: string) => {
+  const checkSetExistingSchedule = (dateValue: string) => {
+    console.log({ selectedDate, userId }, dateValue, scheduleQuery);
+
     if (dateValue && scheduleQuery.data) {
       const fullDate = dateValue.split("-");
 
-      const scheduledItem = scheduleQuery.data.data.filter((item: IDate) => {
+      const scheduledItem = scheduleQuery.data.data.filter((item: any) => {
         if (
           item.day === Number(fullDate[2]) &&
           item.month === Number(fullDate[1]) &&
@@ -183,7 +178,7 @@ export default function Home() {
 
   const onSelect = (value: string) => {
     setDate(value);
-    setDayUserSchedule(value);
+    checkSetExistingSchedule(value);
   };
 
   const removeSchedule = useMutation(
@@ -226,9 +221,8 @@ export default function Home() {
       setUserId(storedUserId);
     }
   }, []);
-
   useEffect(() => {
-    setDayUserSchedule(selectedDate);
+    console.log(1111, scheduleQuery.data);
   }, [scheduleQuery.data]);
 
   return (

@@ -39,8 +39,6 @@ interface IDate {
   day: number;
   month: number;
   year: number;
-  startHour?: string;
-  endHour?: string;
 }
 
 type RequiredMark = boolean | "optional";
@@ -108,7 +106,7 @@ export default function Home() {
       onSuccess: () => {
         message.success("Schedule created successfully");
         queryClient.invalidateQueries({
-          queryKey: ["schedules", "schedules/user/"],
+          queryKey: ["schedules", userId],
         });
       },
       onError: () => {

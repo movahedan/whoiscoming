@@ -1,41 +1,43 @@
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
+import React from "react";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import { Table, Col, Row, Space, Card } from "antd";
 import { useQuery } from "@tanstack/react-query";
+// import { formatDate } from "@whoiscoming-ui/utilities";
 
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
-
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
-  },
-  {
-    title: "Hours",
-    dataIndex: "hours",
-    key: "hours",
-  },
-];
-
+interface IDate {
+  day: number;
+  month: number;
+  year: number;
+}
 export default function Overview() {
-  const [selectedDate, setSelectedDay] = useState(dayjs().format("YYYY-MM-DD"));
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Hours",
+      dataIndex: "hours",
+      key: "hours",
+    },
+  ];
+  const [selectedDay, setSelectedDay] = React.useState<IDate>({
+    day: 1,
+    month: 1,
+    year: 2023,
+  });
 
   const query = useQuery({
-    queryKey: ["schedules", selectedDate],
-    enabled: !!selectedDate,
+    queryKey: ["whoiscoming", selectedDay],
     queryFn: async () => {
-      const fullDate = selectedDate.split("-");
-
-      const URL = `http://localhost:3000/schedules/${Number(
-        fullDate[2]
-      )}/${Number(fullDate[1])}/${Number(fullDate[0])}`;
+      const URL = `http://localhost:3000/schedules/${selectedDay.day}/${selectedDay.month}/${selectedDay.year}`;
 
       const options = {
         method: "GET",
@@ -48,7 +50,7 @@ export default function Overview() {
     },
   });
 
-  let dataSource = (query.data || []).map((item: any) => {
+  const dataSource = (query.data || []).map((item: any) => {
     return {
       name: item.user.name,
       email: item.user.email,
@@ -57,20 +59,21 @@ export default function Overview() {
     };
   });
 
-  const onDaySelect = (value: string) => {
-    setSelectedDay(value);
-  };
+  // const onPanelChange = (value: Dayjs, mode: any) => {
+  //   console.log(value.format("YYYY-MM-DD"), mode);
+  // };
 
-  useEffect(() => {
-    dataSource = (query.data || []).map((item: any) => {
-      return {
-        name: item.user.name,
-        email: item.user.email,
-        id: item.user.id,
-        hours: `${item.startHour}:00 - ${item.endHour}:00 `,
-      };
+  // console.log({ dataSource }, query.data);
+  const onDaySelect = (value: string) => {
+    // console.log(formatDate(value));
+
+    const fullDate = value.split("-");
+    setSelectedDay({
+      day: Number(fullDate[2]),
+      month: Number(fullDate[1]),
+      year: Number(fullDate[0]),
     });
-  }, [query.data]);
+  };
 
   return (
     <Layout>
@@ -88,7 +91,7 @@ export default function Overview() {
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                paddingTop: "34px",
+                paddingTop: "16px",
               }}
               direction="vertical"
             >

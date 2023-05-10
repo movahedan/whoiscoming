@@ -1,41 +1,42 @@
-import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
+import React from "react";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import { Table, Col, Row, Space, Card } from "antd";
 import { useQuery } from "@tanstack/react-query";
 
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
-
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-    key: "email",
-  },
-  {
-    title: "Hours",
-    dataIndex: "hours",
-    key: "hours",
-  },
-];
-
+interface IDate {
+  day: number;
+  month: number;
+  year: number;
+}
 export default function Overview() {
-  const [selectedDate, setSelectedDay] = useState(dayjs().format("YYYY-MM-DD"));
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Hours",
+      dataIndex: "hours",
+      key: "hours",
+    },
+  ];
+  const [selectedDay, setSelectedDay] = React.useState<IDate>({
+    day: 1,
+    month: 1,
+    year: 2023,
+  });
 
   const query = useQuery({
-    queryKey: ["schedules", selectedDate],
-    enabled: !!selectedDate,
+    queryKey: ["users"],
     queryFn: async () => {
-      const fullDate = selectedDate.split("-");
-
-      const URL = `http://localhost:3000/schedules/${Number(
-        fullDate[2]
-      )}/${Number(fullDate[1])}/${Number(fullDate[0])}`;
+      const URL = `http://localhost:3000/schedules/${selectedDay.day}/${selectedDay.month}/${selectedDay.year}`;
 
       const options = {
         method: "GET",
@@ -48,7 +49,7 @@ export default function Overview() {
     },
   });
 
-  let dataSource = (query.data || []).map((item: any) => {
+  const dataSource = (query.data || []).map((item: any) => {
     return {
       name: item.user.name,
       email: item.user.email,
@@ -57,41 +58,21 @@ export default function Overview() {
     };
   });
 
-  const onDaySelect = (value: string) => {
-    setSelectedDay(value);
-  };
-
-  useEffect(() => {
-    dataSource = (query.data || []).map((item: any) => {
-      return {
-        name: item.user.name,
-        email: item.user.email,
-        id: item.user.id,
-        hours: `${item.startHour}:00 - ${item.endHour}:00 `,
-      };
-    });
-  }, [query.data]);
-
   return (
     <Layout>
       <Card>
         <Row>
-          <Col span={10} style={{ padding: "16px" }}>
-            <Calendar
-              dataTestId="overview-page-calendar"
-              onSelect={onDaySelect}
-            />
-          </Col>
           <Col span={12} style={{ padding: "16px" }}>
             <Space
               style={{
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                paddingTop: "34px",
+                paddingTop: "16px",
               }}
               direction="vertical"
             >
+              List of people
               <Table
                 dataSource={dataSource}
                 columns={columns}

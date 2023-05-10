@@ -5,7 +5,11 @@ import { Table, Col, Row, Space, Card } from "antd";
 import { useQuery } from "@tanstack/react-query";
 
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
-
+interface IDate {
+  day: number;
+  month: number;
+  year: number;
+}
 const columns = [
   {
     title: "Name",
@@ -28,14 +32,10 @@ export default function Overview() {
   const [selectedDate, setSelectedDay] = useState(dayjs().format("YYYY-MM-DD"));
 
   const query = useQuery({
-    queryKey: ["schedules", selectedDate],
-    enabled: !!selectedDate,
+    queryKey: ["schedules", selectedDay],
+    enabled: !!selectedDay,
     queryFn: async () => {
-      const fullDate = selectedDate.split("-");
-
-      const URL = `http://localhost:3000/schedules/${Number(
-        fullDate[2]
-      )}/${Number(fullDate[1])}/${Number(fullDate[0])}`;
+      const URL = `http://localhost:3000/schedules/${selectedDay.day}/${selectedDay.month}/${selectedDay.year}`;
 
       const options = {
         method: "GET",
@@ -58,6 +58,7 @@ export default function Overview() {
   });
 
   const onDaySelect = (value: string) => {
+    const fullDate = value.split("-");
     setSelectedDay(value);
   };
 
@@ -88,7 +89,7 @@ export default function Overview() {
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                paddingTop: "34px",
+                paddingTop: "16px",
               }}
               direction="vertical"
             >

@@ -1,12 +1,11 @@
 // import { classNames } from '@whoiscoming-ui/utilities';
 import React, { useEffect } from "react";
-import { UserOutlined } from "@ant-design/icons";
-import { Layout as AntLayout, Menu } from "antd";
-import Link from "next/link";
+import { Layout as AntLayout } from "antd";
 
 import type { CSSProperties, FC, ReactNode } from "react";
+import NavigationBar from "@whoiscoming-ui/ui/organisms/Navbar/Navbar";
 
-const { Header, Content } = AntLayout;
+const { Content } = AntLayout;
 
 export type LayoutProps = {
   footer?: ReactNode;
@@ -26,26 +25,14 @@ export const Layout: FC<LayoutProps> = ({
   useEffect(() => {
     setEmail(localStorage.getItem("email") || "");
   }, []);
+
+  const onLogout = () => {
+    localStorage.setItem("email", "");
+    window.location.reload();
+  };
   return (
     <AntLayout className="layout" suppressHydrationWarning>
-      <Header>
-        <Menu mode="horizontal" theme="dark" defaultSelectedKeys={["home"]}>
-          <Menu.Item key="home">
-            <Link href="/">Home</Link>
-          </Menu.Item>
-          <Menu.Item key="Overview">
-            <Link href="/overview">Overview</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="user"
-            icon={<UserOutlined />}
-            style={{ float: "right" }}
-            disabled
-          >
-            {email}
-          </Menu.Item>
-        </Menu>
-      </Header>
+      <NavigationBar userEmail={email} onLogout={onLogout} />
 
       <Content style={{ padding: "20px", background: "white" }}>
         {children}

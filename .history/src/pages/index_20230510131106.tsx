@@ -35,13 +35,6 @@ const marks: SliderMarks = {
   17: "17:00",
   18: "18:00",
 };
-interface IDate {
-  day: number;
-  month: number;
-  year: number;
-  startHour?: string;
-  endHour?: string;
-}
 
 type RequiredMark = boolean | "optional";
 const queryClient = new QueryClient();
@@ -85,43 +78,7 @@ export default function Home() {
     },
   };
 
-  const createScheduleMutation = useMutation(
-    () => {
-      const URL = `http://localhost:3000/schedules`;
-      const date = selectedDate.split("-");
-      const options = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: localStorage.getItem("userId"),
-          day: Number(date[2]),
-          month: Number(date[1]),
-          year: Number(date[0]),
-          startHour: hourRange[0],
-          endHour: hourRange[1],
-        }),
-      };
-
-      return fetch(URL, options);
-    },
-    {
-      onSuccess: () => {
-        message.success("Schedule created successfully");
-        queryClient.invalidateQueries({
-          queryKey: ["schedules", "schedules/user/"],
-        });
-      },
-      onError: () => {
-        message.error("Error creating schedule");
-      },
-    }
-  );
-
-  const onSave = () => {
-    createScheduleMutation.mutate();
-  };
-
-  const userCreateMutation = useMutation(
+  const userMutation = useMutation(
     (values: any) => {
       const { user } = values;
       const URL = `http://localhost:3000/users`;
@@ -145,8 +102,45 @@ export default function Home() {
       },
     }
   );
-  const onCreateUser = (values: any) => {
-    userCreateMutation.mutate(values);
+
+  const createSchedule = useMutation(
+    () => {
+      const URL = `http://localhost:3000/schedules`;
+      const date = selectedDate.split("-");
+      const options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: localStorage.getItem("userId"),
+          day: Number(date[2]),
+          month: Number(date[1]),
+          year: Number(date[0]),
+          startHour: hourRange[0],
+          endHour: hourRange[1],
+        }),
+      };
+
+      return fetch(URL, options);
+    },
+    {
+      onSuccess: () => {
+        message.success("Schedule created successfully");
+        queryClient.invalidateQueries({
+          queryKey: ["schedules", userId],
+        });
+      },
+      onError: () => {
+        message.error("Error creating schedule");
+      },
+    }
+  );
+
+  const onSave = () => {
+    createSchedule.mutate();
+  };
+
+  const onFinish = (values: any) => {
+    userMutation.mutate(values);
     localStorage.setItem("email", values.email);
     setIsModalOpen(false);
   };
@@ -160,11 +154,13 @@ export default function Home() {
     enabled: !!userId,
   });
 
-  const setDayUserSchedule = (dateValue: string) => {
+  const checkSetExistingSchedule = (dateValue: string) => {
+    console.log({ selectedDate, userId }, dateValue, scheduleQuery);
+
     if (dateValue && scheduleQuery.data) {
       const fullDate = dateValue.split("-");
 
-      const scheduledItem = scheduleQuery.data.data.filter((item: IDate) => {
+      const scheduledItem = scheduleQuery.data.data.filter((item: any) => {
         if (
           item.day === Number(fullDate[2]) &&
           item.month === Number(fullDate[1]) &&
@@ -183,7 +179,7 @@ export default function Home() {
 
   const onSelect = (value: string) => {
     setDate(value);
-    setDayUserSchedule(value);
+    checkSetExistingSchedule(value);
   };
 
   const removeSchedule = useMutation(
@@ -213,23 +209,28 @@ export default function Home() {
   const handleRemove = () => {
     if (existingSchedule) removeSchedule.mutate(existingSchedule[0]);
   };
-
   const handleUpdateTime = () => {};
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("email");
     const storedUserId = localStorage.getItem("userId");
 
+    const fetchSchedule = async () => {
+      console.info(dayjs().format("YYYY-MM-DD"), storedUserId);
+
+      if (storedUserId) {
+        await scheduleQuery.refetch();
+        checkSetExistingSchedule(dayjs().format("YYYY-MM-DD"));
+      }
+    };
+
     if (!storedEmail || !storedUserId) {
       showModal();
     } else {
       setUserId(storedUserId);
+      fetchSchedule();
     }
   }, []);
-
-  useEffect(() => {
-    setDayUserSchedule(selectedDate);
-  }, [scheduleQuery.data]);
 
   return (
     <Layout>
@@ -310,10 +311,8 @@ export default function Home() {
                   size="large"
                   type="default"
                   onClick={onSave}
-                  loading={createScheduleMutation.isLoading}
-                  disabled={
-                    createScheduleMutation.isLoading || !!existingSchedule
-                  }
+                  loading={createSchedule.isLoading}
+                  disabled={createSchedule.isLoading || !!existingSchedule}
                 >
                   Save
                 </Button>
@@ -321,10 +320,8 @@ export default function Home() {
                   size="large"
                   type="ghost"
                   onClick={() => setHourRange([8, 17])}
-                  loading={createScheduleMutation.isLoading}
-                  disabled={
-                    createScheduleMutation.isLoading || !!existingSchedule
-                  }
+                  loading={createSchedule.isLoading}
+                  disabled={createSchedule.isLoading || !!existingSchedule}
                 >
                   Reset
                 </Button>
@@ -347,7 +344,7 @@ export default function Home() {
           onValuesChange={onRequiredTypeChange}
           requiredMark={requiredMark}
           validateMessages={validateMessages}
-          onFinish={onCreateUser}
+          onFinish={onFinish}
         >
           <Form.Item
             label="Full name"

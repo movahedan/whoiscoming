@@ -5,7 +5,11 @@ import { Table, Col, Row, Space, Card } from "antd";
 import { useQuery } from "@tanstack/react-query";
 
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
-
+interface IDate {
+  day: number;
+  month: number;
+  year: number;
+}
 const columns = [
   {
     title: "Name",
@@ -88,7 +92,7 @@ export default function Overview() {
                 display: "flex",
                 justifyContent: "center",
                 width: "100%",
-                paddingTop: "34px",
+                paddingTop: "36px",
               }}
               direction="vertical"
             >

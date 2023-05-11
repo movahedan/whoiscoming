@@ -4,6 +4,7 @@ import { Layout as AntLayout } from "antd";
 
 import type { CSSProperties, FC, ReactNode } from "react";
 import NavigationBar from "@whoiscoming-ui/ui/organisms/Navbar/Navbar";
+import { UserInfoModal } from "@whoiscoming-ui/ui/molecules";
 
 const { Content } = AntLayout;
 
@@ -37,6 +38,7 @@ export const Layout: FC<LayoutProps> = ({
       <Content style={{ padding: "20px", background: "white" }}>
         {children}
       </Content>
+      <UserInfoModal dataTestId={"user"} />
       {/* <Footer style={{ textAlign: 'center', marginTop:'80px' }}> ©2023  {footer}</Footer> */}
     </AntLayout>
   );

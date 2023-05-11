@@ -8,9 +8,6 @@ import {
   Row,
   Space,
   Card,
-  Modal,
-  Form,
-  Input,
   message,
   Alert,
 } from "antd";
@@ -42,16 +39,21 @@ interface IDate {
   startHour?: string;
   endHour?: string;
 }
-
+type UserId = string | null;
 const queryClient = new QueryClient();
-
 
 export default function Home() {
   const [hourRange, setHourRange] = useState<[number, number]>([0, 0]);
   const [imNotComing, setImNotComing] = useState(true);
   const [selectedDate, setDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [existingSchedule, setExistingSchedule] = useState(null);
-  const defaultRange: [number, number] = [9, 17];
+  // const defaultRange: [number, number] = [9, 17];
+
+  let userId: UserId = null;
+
+  if (typeof window !== "undefined") {
+    userId = localStorage.getItem("userId");
+  }
 
   const createScheduleMutation = useMutation(
     () => {
@@ -61,7 +63,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: localStorage.getItem("userId"),
+          userId: userId,
           day: Number(date[2]),
           month: Number(date[1]),
           year: Number(date[0]),
@@ -90,7 +92,6 @@ export default function Home() {
     setImNotComing(hourRange[0] === 0);
   };
 
-  
   const scheduleQuery = useQuery({
     queryKey: ["schedules/user/", userId],
     queryFn: () =>
@@ -113,7 +114,7 @@ export default function Home() {
           setHourRange([Number(item.startHour), Number(item.endHour)]);
           return true;
         }
-        
+
         return false;
       });
 
@@ -158,7 +159,6 @@ export default function Home() {
 
   const handleUpdateTime = () => {};
 
-
   useEffect(() => {
     setDayUserSchedule(selectedDate);
   }, [scheduleQuery.data]);
@@ -172,23 +172,23 @@ export default function Home() {
           </Col>
           <Col span={12}>
             {imNotComing ? (
-              <Text>{'Not ganna be there'}</Text>
+              <Text>{"Not ganna be there"}</Text>
             ) : (
               <Text>{"I'm coming!"}</Text>
             )}
           </Col>
           <Col span={12}>
-            <Title level={4} className='p-8'>
-              Choose time{' '}
+            <Title level={4} className="p-8">
+              Choose time{" "}
             </Title>
             <Space
               style={{
-                display: 'flex',
-                justifyContent: 'center',
-                width: '90%',
-                margin: 'auto',
+                display: "flex",
+                justifyContent: "center",
+                width: "90%",
+                margin: "auto",
               }}
-              direction='vertical'
+              direction="vertical"
             >
               <Slider
                 range
@@ -200,24 +200,24 @@ export default function Home() {
                 onChange={(value) => setHourRange(value)}
               />
             </Space>
-            <Space size='middle' className='p-8'>
+            <Space size="middle" className="p-8">
               <Button
-                size='large'
-                type='default'
+                size="large"
+                type="default"
                 onClick={() => onSave([0, 0])}
               >
                 {"I'm not going anywhere"}
               </Button>
               <Button
-                size='large'
-                type='default'
+                size="large"
+                type="default"
                 onClick={() => onSave(hourRange)}
               >
                 Save
               </Button>
               <Button
-                size='large'
-                type='ghost'
+                size="large"
+                type="ghost"
                 onClick={() => setHourRange([0, 0])}
               >
                 Reset
@@ -229,7 +229,7 @@ export default function Home() {
           <Space size="middle">
             {scheduleQuery.isLoading ?? "Loading..."}
 
-            {existingSchedule && (
+            {!!existingSchedule && (
               <>
                 <Alert
                   message="You have booked a schedule on this day"

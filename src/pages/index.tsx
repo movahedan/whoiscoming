@@ -16,21 +16,26 @@ import dayjs from "dayjs";
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import type { SliderMarks } from "antd/es/slider";
+import {
+  useCreateScheduleMutation,
+  useScheduleQuery,
+  useRemoveScheduleMutation,
+} from "./main/usemainRequests";
 
 const { Title, Text } = Typography;
 const marks: SliderMarks = {
-  7: "07",
-  8: "08",
-  9: "09",
-  10: "10",
-  11: "11",
-  12: "12",
-  13: "13",
-  14: "14",
-  15: "15",
-  16: "16",
-  17: "17",
-  18: "18",
+  7: "07::00",
+  8: "08::00",
+  9: "09::00",
+  10: "10::00",
+  11: "11::00",
+  12: "12::00",
+  13: "13::00",
+  14: "14::00",
+  15: "15::00",
+  16: "16::00",
+  17: "17::00",
+  18: "18::00",
 };
 interface IDate {
   day: number;
@@ -55,51 +60,14 @@ export default function Home() {
     userId = localStorage.getItem("userId");
   }
 
-  const createScheduleMutation = useMutation(
-    () => {
-      const URL = `http://localhost:3000/schedules`;
-      const date = selectedDate.split("-");
-      const options = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: userId,
-          day: Number(date[2]),
-          month: Number(date[1]),
-          year: Number(date[0]),
-          startHour: hourRange[0],
-          endHour: hourRange[1],
-        }),
-      };
-
-      return fetch(URL, options);
-    },
-    {
-      onSuccess: () => {
-        message.success("Schedule created successfully");
-        queryClient.invalidateQueries({
-          queryKey: ["schedules", "schedules/user/"],
-        });
-      },
-      onError: () => {
-        message.error("Error creating schedule");
-      },
-    }
-  );
+  const createScheduleMutation = useCreateScheduleMutation(userId || "");
 
   const onSave = (hourRange: [number, number]) => {
-    createScheduleMutation.mutate();
+    createScheduleMutation.mutate({ selectedDate, hourRange });
     setImNotComing(hourRange[0] === 0);
   };
 
-  const scheduleQuery = useQuery({
-    queryKey: ["schedules/user/", userId],
-    queryFn: () =>
-      fetch("http://localhost:3000/schedules/user/" + userId, {
-        method: "GET",
-      }).then((res) => res.json()),
-    enabled: !!userId,
-  });
+  const scheduleQuery = useScheduleQuery(userId || "");
 
   const setDayUserSchedule = (dateValue: string) => {
     if (dateValue && scheduleQuery.data) {
@@ -129,29 +97,7 @@ export default function Home() {
     setDayUserSchedule(value);
   };
 
-  const removeSchedule = useMutation(
-    (item: any) => {
-      const { day, month, year } = item;
-
-      const URL = `http://localhost:3000/schedules/${userId}/${day}/${month}/${year}`;
-      const options = {
-        method: "DELETE",
-      };
-
-      return fetch(URL, options);
-    },
-    {
-      onSuccess: () => {
-        message.success("Schedule removed successfully");
-        queryClient.invalidateQueries({
-          queryKey: ["schedules/user/", userId],
-        });
-      },
-      onError: () => {
-        message.error("Error deleting schedule");
-      },
-    }
-  );
+  const removeSchedule = useRemoveScheduleMutation(userId || "");
 
   const handleRemove = () => {
     if (existingSchedule) removeSchedule.mutate(existingSchedule[0]);

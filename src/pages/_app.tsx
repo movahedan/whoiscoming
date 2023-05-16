@@ -7,10 +7,10 @@ import { ErrorBoundary } from "@whoiscoming-ui/ui/utilities";
 
 import type { AppProps, NextWebVitalsMetric } from "next/app";
 
-const isWebVitalsEnabled = true;
+const isWebVitalsEnabled = false;
 export const reportWebVitals = (metric: NextWebVitalsMetric): void => {
   if (isWebVitalsEnabled) {
-    // console.log(metric);
+    console.log(metric);
   }
 };
 

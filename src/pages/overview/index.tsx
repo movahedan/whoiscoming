@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import { Table, Col, Row, Space, Card } from "antd";
-import { useQuery } from "@tanstack/react-query";
 
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
+import { useSchedulesQuery } from "./useOverviewRequests";
 
 const columns = [
   {
@@ -27,50 +27,11 @@ const columns = [
 export default function Overview() {
   const [selectedDate, setSelectedDay] = useState(dayjs().format("YYYY-MM-DD"));
 
-  const query = useQuery({
-    queryKey: ["schedules", selectedDate],
-    enabled: !!selectedDate,
-    queryFn: async () => {
-      const fullDate = selectedDate.split("-");
-
-      const URL = `http://localhost:3000/schedules/${Number(
-        fullDate[2]
-      )}/${Number(fullDate[1])}/${Number(fullDate[0])}`;
-
-      const options = {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      };
-
-      const response = await fetch(URL, options);
-      const jsonData = await response.json();
-      return jsonData.data;
-    },
-  });
-
-  let dataSource = (query.data || []).map((item: any) => {
-    return {
-      name: item.user.name,
-      email: item.user.email,
-      id: item.user.id,
-      hours: `${item.startHour}:00 - ${item.endHour}:00 `,
-    };
-  });
+  const schedulesQuery = useSchedulesQuery(selectedDate);
 
   const onDaySelect = (value: string) => {
     setSelectedDay(value);
   };
-
-  useEffect(() => {
-    dataSource = (query.data || []).map((item: any) => {
-      return {
-        name: item.user.name,
-        email: item.user.email,
-        id: item.user.id,
-        hours: `${item.startHour}:00 - ${item.endHour}:00 `,
-      };
-    });
-  }, [query.data]);
 
   return (
     <Layout>
@@ -93,10 +54,10 @@ export default function Overview() {
               direction="vertical"
             >
               <Table
-                dataSource={dataSource}
+                dataSource={schedulesQuery.data}
                 columns={columns}
                 pagination={{ hideOnSinglePage: true }}
-                loading={query.isLoading}
+                loading={schedulesQuery.isLoading}
               />
             </Space>
           </Col>

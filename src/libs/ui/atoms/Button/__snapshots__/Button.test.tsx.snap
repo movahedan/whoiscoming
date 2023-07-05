@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button> should match is's snapshot: default 1`] = `
+<div>
+  <button
+    class="button default"
+  >
+    Hello
+  </button>
+</div>
+`;
+
+exports[`<Button> should match is's snapshot: icon default 1`] = `
+<div>
+  <button
+    class="button default"
+  >
+    <span
+      class="mr-20"
+    >
+      i
+    </span>
+    Hello
+  </button>
+</div>
+`;
+
+exports[`<Button> should match is's snapshot: icon outline 1`] = `
+<div>
+  <button
+    class="button outline"
+  >
+    <span
+      class="mr-20"
+    >
+      i
+    </span>
+    Hello
+  </button>
+</div>
+`;
+
+exports[`<Button> should match is's snapshot: outline 1`] = `
+<div>
+  <button
+    class="button outline"
+  >
+    Hello
+  </button>
+</div>
+`;

@@ -1,0 +1,5 @@
+.button {
+  @apply inline-flex prose prose-button py-16 px-40;
+  @apply border rounded-lg outline-0;
+  @apply transition-all duration-300;
+}

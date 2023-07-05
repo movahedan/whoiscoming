@@ -1,235 +1,192 @@
-import React, { useState, useEffect } from "react";
-import { useMutation, useQuery, QueryClient } from "@tanstack/react-query";
-import {
-  Typography,
-  Slider,
-  Button,
-  Col,
-  Row,
-  Space,
-  Card,
-  message,
-  Alert,
-} from "antd";
-import dayjs from "dayjs";
+import React, { useState } from "react";
+import { Typography, Col, Row, Space, Card, Button } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import dayjs, { Dayjs } from "dayjs";
 
 import { Calendar } from "@whoiscoming-ui/ui/organisms";
 import { Layout } from "@whoiscoming-ui/ui/templates";
-import type { SliderMarks } from "antd/es/slider";
 import {
   useCreateScheduleMutation,
   useScheduleQuery,
-  useRemoveScheduleMutation,
 } from "./main/usemainRequests";
+import useUserId from "./../libs/hooks/UserId";
+import ScheduleModal from "../libs/ui/molecules/ScheduleModal/ScheduleModal";
 
-const { Title, Text } = Typography;
-const marks: SliderMarks = {
-  7: "07::00",
-  8: "08::00",
-  9: "09::00",
-  10: "10::00",
-  11: "11::00",
-  12: "12::00",
-  13: "13::00",
-  14: "14::00",
-  15: "15::00",
-  16: "16::00",
-  17: "17::00",
-  18: "18::00",
-};
-interface IDate {
-  day: number;
-  month: number;
-  year: number;
-  startHour?: string;
-  endHour?: string;
-}
 type UserId = string | null;
-const queryClient = new QueryClient();
 
 export default function Home() {
-  const [hourRange, setHourRange] = useState<[number, number]>([0, 0]);
-  const [imNotComing, setImNotComing] = useState(true);
-  const [selectedDate, setDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [existingSchedule, setExistingSchedule] = useState(null);
-  // const defaultRange: [number, number] = [9, 17];
+  let currentTime = dayjs();
+  let userId: UserId = useUserId();
 
-  let userId: UserId = null;
+  let nineAM = currentTime.set("hour", 9).set("minute", 0).set("second", 0);
+  let sixPM = currentTime.set("hour", 18).set("minute", 0).set("second", 0);
 
-  if (typeof window !== "undefined") {
-    userId = localStorage.getItem("userId");
-  }
+  const [open, setOpen] = useState(false);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const [selectedDate, setDate] = useState<Dayjs>(currentTime);
+  const [startHour, setStartHour] = useState<Dayjs>(nineAM);
+  const [endHour, setEndHour] = useState<Dayjs>(sixPM);
 
   const createScheduleMutation = useCreateScheduleMutation(userId || "");
 
-  const onSave = (hourRange: [number, number]) => {
-    createScheduleMutation.mutate({ selectedDate, hourRange });
-    setImNotComing(hourRange[0] === 0);
-  };
-
   const scheduleQuery = useScheduleQuery(userId || "");
 
-  const setDayUserSchedule = (dateValue: string) => {
-    if (dateValue && scheduleQuery.data) {
-      const fullDate = dateValue.split("-");
-
-      const scheduledItem = scheduleQuery.data.data.filter((item: IDate) => {
-        if (
-          item.day === Number(fullDate[2]) &&
-          item.month === Number(fullDate[1]) &&
-          item.year === Number(fullDate[0])
-        ) {
-          setHourRange([Number(item.startHour), Number(item.endHour)]);
-          return true;
-        }
-
-        return false;
-      });
-
-      scheduledItem.length >= 1
-        ? setExistingSchedule(scheduledItem)
-        : setExistingSchedule(null);
-    }
-  };
+  const existingSchedule = scheduleQuery?.data?.find(
+    (item: any) =>
+      dayjs(item.date).isSame(selectedDate, "day") &&
+      item.status === "IN_OFFICE"
+  );
 
   const onSelect = (value: string) => {
-    setDate(value);
-    setDayUserSchedule(value);
+    setDate(dayjs(value));
+
+    const existingItem = scheduleQuery?.data.find(
+      (item: any) =>
+        dayjs(item.date).isSame(value, "day") && item.status === "IN_OFFICE"
+    );
+    console.log("onSelect existingItem", existingItem);
+
+    if (existingItem) {
+      setStartHour(dayjs.unix(existingItem.startHour));
+      setEndHour(dayjs.unix(existingItem.endHour));
+    }
+    showModal();
   };
 
-  const removeSchedule = useRemoveScheduleMutation(userId || "");
+  const handleOk = () => {
+    createScheduleMutation.mutate({
+      selectedDate: selectedDate.format("YYYY-MM-DD"),
+      hourRange: [startHour?.unix() || 0, endHour?.unix() || 0],
+      status: "IN_OFFICE",
+    });
 
-  const handleRemove = () => {
-    if (existingSchedule) removeSchedule.mutate(existingSchedule[0]);
+    setOpen(false);
   };
 
-  const handleUpdateTime = () => {};
+  const handleRemoveSchedule = () => {
+    createScheduleMutation.mutate({
+      selectedDate: selectedDate.format("YYYY-MM-DD"),
+      hourRange: [startHour?.unix() || 0, endHour?.unix() || 0],
+      status: "OUT_OF_OFFICE",
+    });
 
-  useEffect(() => {
-    setDayUserSchedule(selectedDate);
-  }, [scheduleQuery.data]);
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const modalFooter = [
+    <Button key="submit" type="primary" onClick={() => handleOk()}>
+      {existingSchedule ? "Update" : "Save"}
+    </Button>,
+    <Button key="back" onClick={handleCancel}>
+      Cancel
+    </Button>,
+  ];
+
+  if (existingSchedule) {
+    modalFooter.push(
+      <Button
+        key="danger"
+        onClick={handleRemoveSchedule}
+        danger
+        icon={<DeleteOutlined />}
+      >
+        Remove this schedule
+      </Button>
+    );
+  }
 
   return (
     <Layout>
       <Card>
-        <Row>
-          <Col span={12}>
-            <Calendar dataTestId="modify-page-calendar" onSelect={onSelect} />
+        <Row justify="center">
+          <Col xs={24} sm={24} md={20} lg={10} xl={10}>
+            <Typography.Title level={5}>
+              Click on calendar to manage office day
+            </Typography.Title>
+            <Calendar
+              dataTestId="modify-page-calendar"
+              onSelect={onSelect}
+              highlightedDays={
+                scheduleQuery.isLoading
+                  ? []
+                  : scheduleQuery?.data?.filter(
+                      (x: any) => x.status !== "OUT_OF_OFFICE"
+                    )
+              }
+            />
           </Col>
-          <Col span={12}>
-            {imNotComing ? (
-              <Text>{"Not ganna be there"}</Text>
-            ) : (
-              <Text>{"I'm coming!"}</Text>
-            )}
-          </Col>
-          <Col span={12}>
-            <Title level={4} className="p-8">
-              Choose time{" "}
-            </Title>
-            <Space
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "90%",
-                margin: "auto",
-              }}
-              direction="vertical"
-            >
-              <Slider
-                range
-                step={1}
-                marks={marks}
-                min={7}
-                max={18}
-                value={hourRange}
-                onChange={(value) => setHourRange(value)}
-              />
-            </Space>
-            <Space size="middle" className="p-8">
-              <Button
-                size="large"
-                type="default"
-                onClick={() => onSave([0, 0])}
+
+          <ScheduleModal
+            open={open}
+            hideModal={() => setOpen(false)}
+            handleOk={handleOk}
+            handleRemoveSchedule={handleRemoveSchedule}
+            existingSchedule={existingSchedule}
+            startHour={startHour}
+            setStartHour={setStartHour}
+            endHour={endHour}
+            setEndHour={setEndHour}
+          />
+          {/* <Modal
+            title={
+              existingSchedule
+                ? "Update office hours: " + formattedDate
+                : "Confirm  time in the office: " + formattedDate
+            }
+            open={open}
+            onOk={hideModal}
+            onCancel={hideModal}
+            cancelText="Cancel"
+            footer={modalFooter}
+          >
+            <Col span={12} style={{ paddingLeft: 8 }}>
+              <Space
+                style={{
+                  display: "flex",
+                }}
+                direction="horizontal"
               >
-                {"I'm not going anywhere"}
-              </Button>
-              <Button
-                size="large"
-                type="default"
-                onClick={() => onSave(hourRange)}
-              >
-                Save
-              </Button>
-              <Button
-                size="large"
-                type="ghost"
-                onClick={() => setHourRange([0, 0])}
-              >
-                Reset
-              </Button>
-            </Space>
-          </Col>
+                From
+                <TimePicker
+                  minuteStep={15}
+                  hourStep={1}
+                  format="HH:mm"
+                  defaultValue={startHour ?? nineAM}
+                  value={startHour}
+                  disabledTime={() => ({
+                    disabledHours: () => [0, 1, 2, 3, 4, 5, 20, 21, 22, 23, 24],
+                  })}
+                  hideDisabledOptions
+                  onSelect={(time) => {
+                    setStartHour(time);
+                  }}
+                />
+                to
+                <TimePicker
+                  minuteStep={15}
+                  hourStep={1}
+                  format="HH:mm"
+                  defaultValue={endHour ?? sixPM}
+                  disabledTime={() => ({
+                    disabledHours: () => [0, 1, 2, 3, 4, 5, 20, 21, 22, 23, 24],
+                  })}
+                  hideDisabledOptions
+                  onSelect={(time) => setEndHour(time)}
+                />
+              </Space>
+            </Col>
+          </Modal> */}
         </Row>
         <Row>
-          <Space size="middle">
-            {scheduleQuery.isLoading ?? "Loading..."}
-
-            {!!existingSchedule && (
-              <>
-                <Alert
-                  message="You have booked a schedule on this day"
-                  type="success"
-                />
-
-                <Button
-                  size="large"
-                  type="default"
-                  onClick={handleUpdateTime}
-                  disabled
-                >
-                  Update Time
-                </Button>
-                <Button
-                  size="large"
-                  danger
-                  type="default"
-                  onClick={handleRemove}
-                  disabled={removeSchedule.isLoading}
-                  loading={removeSchedule.isLoading}
-                >
-                  Remove
-                </Button>
-              </>
-            )}
-
-            {!existingSchedule && (
-              <>
-                <Button
-                  size="large"
-                  type="default"
-                  onClick={() => onSave(hourRange)}
-                  loading={createScheduleMutation.isLoading}
-                  disabled={
-                    createScheduleMutation.isLoading || !!existingSchedule
-                  }
-                >
-                  Save
-                </Button>
-                <Button
-                  size="large"
-                  type="ghost"
-                  onClick={() => setHourRange([8, 17])}
-                  loading={createScheduleMutation.isLoading}
-                  disabled={
-                    createScheduleMutation.isLoading || !!existingSchedule
-                  }
-                >
-                  Reset
-                </Button>
-              </>
-            )}
-          </Space>
+          <Space size="middle">{scheduleQuery.isLoading ?? "Loading..."}</Space>
         </Row>
       </Card>
     </Layout>

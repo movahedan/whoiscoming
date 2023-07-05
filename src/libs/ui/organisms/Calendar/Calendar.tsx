@@ -1,21 +1,23 @@
 import {
-  Typography,
   Col,
   Row,
   Calendar as AntCalendar,
   Select,
   Button,
+  CalendarProps as AntCalendarProps,
 } from "antd";
 import dayjs from "dayjs";
 import React, { useState } from "react";
-
 import { classNames, formatDate } from "@whoiscoming-ui/utilities";
-
 import styles from "./Calendar.module.css";
-
-import type { CalendarProps as AntCalendarProps } from "antd";
 import type { Dayjs } from "dayjs";
 import type { CSSProperties } from "react";
+
+interface ScheduleItem {
+  date: string;
+  startHour: string;
+  endHour: string;
+}
 
 export type CalendarProps = {
   dataTestId: string;
@@ -25,17 +27,48 @@ export type CalendarProps = {
 
   onPanelChange?: AntCalendarProps<Dayjs>["onPanelChange"];
   onSelect?: (date: string) => void;
+  highlightedDays: ScheduleItem[];
 };
 
 export const Calendar = ({
-  as: As = "div",
+  // as: As = "div",
   dataTestId = "Calendar",
   style,
   className,
   onSelect,
   onPanelChange,
+  highlightedDays,
 }: CalendarProps) => {
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
+
+  const dateCellRender = (date: any) => {
+    const dateString = date.format("YYYY-MM-DD");
+
+    const matchingItem = highlightedDays.find((x) =>
+      x.date?.includes(dateString)
+    );
+
+    if (matchingItem) {
+      return (
+        <div
+          className="highlighted-day"
+          style={{
+            background: "rgb(139 219 161)",
+            width: "24px",
+            height: "24px",
+            position: "absolute",
+            top: 0,
+            zIndex: -1,
+            borderRadius: "50%",
+          }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            console.log("double", e);
+          }}
+        ></div>
+      );
+    }
+  };
 
   const handleSelect = (date: Dayjs) => {
     setCurrentDate(date);
@@ -43,10 +76,10 @@ export const Calendar = ({
   };
 
   return (
-    <As
+    <div
       data-testid={dataTestId}
       style={style}
-      className={classNames([styles.wrapper, className])}
+      className={classNames([styles.wrapper, className, "my-calendar"])}
     >
       <AntCalendar
         mode="month"
@@ -54,6 +87,7 @@ export const Calendar = ({
         value={currentDate}
         onSelect={handleSelect}
         onPanelChange={onPanelChange}
+        cellRender={dateCellRender}
         headerRender={({ value, onChange }: { value: any; onChange: any }) => {
           const start = 0;
           const end = 12;
@@ -82,7 +116,6 @@ export const Calendar = ({
 
           return (
             <div style={{ padding: 8 }}>
-              <Typography.Title level={4}>Choose day</Typography.Title>
               <Row gutter={8}>
                 <Col>
                   <Select
@@ -126,6 +159,6 @@ export const Calendar = ({
           );
         }}
       />
-    </As>
+    </div>
   );
 };

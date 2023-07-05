@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import { classNames } from "@whoiscoming-ui/utilities";
-import { Modal, Form, Input, message } from "antd";
+import { Modal, Form, Input, message, Select } from "antd";
 
 import styles from "./UserInfoModal.module.css";
 
@@ -8,17 +8,24 @@ import { CSSProperties, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 type RequiredMark = boolean | "optional";
-
+type Campus = {
+  name: string;
+  id: string;
+};
 export type UserInfoModalProps = {
   dataTestId: string;
   style?: CSSProperties;
   className?: string;
+  campuses: Campus[];
+  isLoading: boolean;
 };
 
 export const UserInfoModal = ({
   dataTestId = "UserInfoModal",
   style,
   className,
+  campuses = [],
+  isLoading,
 }: UserInfoModalProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
@@ -26,6 +33,8 @@ export const UserInfoModal = ({
   const userCreateMutation = useMutation(
     (values: any) => {
       const { user } = values;
+      if (!user.email || !user.campus) throw "no data provided";
+
       const URL = `http://localhost:3000/users`;
       const options = {
         method: "POST",
@@ -101,6 +110,7 @@ export const UserInfoModal = ({
       style={style}
       className={classNames([styles.wrapper, className])}
     >
+      {isLoading && "Loading..."}
       <Form
         form={form}
         layout="vertical"
@@ -126,6 +136,19 @@ export const UserInfoModal = ({
           tooltip="This is a required field"
         >
           <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Campus"
+          name={["user", "campus"]}
+          required
+          tooltip="This is a required field"
+        >
+          <Select>
+            {campuses.map((item) => (
+              <Select.Option value={item.id}>{item.name}</Select.Option>
+            ))}
+          </Select>
         </Form.Item>
       </Form>
     </Modal>

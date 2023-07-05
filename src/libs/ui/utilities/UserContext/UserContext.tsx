@@ -1,10 +1,11 @@
 import { ReactNode, createContext } from "react";
 
-const UserContext = createContext();
+const UserContext = createContext({});
 
 export type UserContextProviderProps = {
-    children: ReactNode;
-    
-}
+  children: ReactNode;
+};
 
-export const UserContextProvider = ({children})
+export const UserContextProvider = ({
+  children,
+}: UserContextProviderProps) => {};

@@ -1,1 +1,1 @@
-export * from './UserInfoModal.tsx';
+export * from "./UserInfoModal";

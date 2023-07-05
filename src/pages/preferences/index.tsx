@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Layout } from "@whoiscoming-ui/ui/templates";
 import { Table, Col, Row, Space, Card } from "antd";
 import {
   useUserMutation,
   useCurrentUserQuery,
   useAllUsersQuery,
+  useGetCampuses,
 } from "./usePreferencesRequests";
 import FavoriteHeart from "@whoiscoming-ui/ui/molecules/FavoriteHeart/FavoriteHeart";
 
@@ -18,8 +19,16 @@ export default function Overview() {
   }
   // Queries
   const currentUserQuery = useCurrentUserQuery(userId);
-  const favoritePeople = currentUserQuery.data?.favoritePeople || [];
-  const allUsersQuery = useAllUsersQuery(userId, favoritePeople);
+  const user = currentUserQuery.data || {};
+
+  const campusesQuery = useGetCampuses();
+
+  const favoritePeople = user?.favoritePeople || [];
+  const allUsersQuery = useAllUsersQuery(
+    userId,
+    favoritePeople,
+    campusesQuery.data
+  );
   // Mutation
   const useMyFavoritePeopleMutation = useUserMutation(
     userId,
@@ -37,37 +46,71 @@ export default function Overview() {
     return useMyFavoritePeopleMutation.mutate(filteredFavoritePeople);
   };
 
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Favorite",
-      dataIndex: "isFavorite",
-      key: "isFavorite",
-      render: (_: any, { isFavorite, id, isCurrentUser }: any) => (
-        <FavoriteHeart
-          isFavorite={isFavorite}
-          id={id}
-          isCurrentUser={isCurrentUser}
-          setFavorite={() => setFavorite(id, !isFavorite)}
-        />
-      ),
-    },
-  ];
+  const currentUserCampus = campusesQuery?.data?.find(
+    (x: any) => x.id === user.campus
+  )?.name;
+
+  const columns = useMemo(
+    () => [
+      {
+        title: "Name",
+        dataIndex: "name",
+        filterSearch: true,
+        key: "name",
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        filterSearch: true,
+        key: "email",
+      },
+      {
+        title: "Campus",
+        dataIndex: "campus",
+        key: "campus",
+        filterSearch: true,
+        filterMultiple: false,
+        filters: campusesQuery.data?.map((x: any) => ({
+          text: x.name,
+          value: x.name,
+        })),
+        onFilter: (value: any, record: any) => {
+          return record.campus === value;
+        },
+        defaultFilteredValue: [currentUserCampus || "Campus Eindhoven"],
+      },
+      {
+        title: "Favorite",
+        dataIndex: "isFavorite",
+        key: "isFavorite",
+        render: (_: any, { isFavorite, id, isCurrentUser }: any) => (
+          <FavoriteHeart
+            isFavorite={isFavorite}
+            id={id}
+            isCurrentUser={isCurrentUser}
+            setFavorite={() => setFavorite(id, !isFavorite)}
+          />
+        ),
+      },
+    ],
+    [currentUserQuery.isLoading, currentUserCampus, campusesQuery.data]
+  );
 
   return (
     <Layout>
       <Card>
-        <Row>
-          <Col span={12} style={{ padding: "16px" }}>
+        <Row justify="center">
+          {(allUsersQuery.isFetching || allUsersQuery.isLoading) &&
+            "Loading..."}
+
+          <Col
+            xs={24}
+            sm={24}
+            md={20}
+            lg={14}
+            xl={14}
+            style={{ padding: "16px" }}
+          >
             <Space
               style={{
                 display: "flex",
@@ -77,17 +120,20 @@ export default function Overview() {
               }}
               direction="vertical"
             >
-              List of people
               <Table
+                // title="List of people"
                 dataSource={allUsersQuery.data}
                 columns={columns}
                 pagination={{ hideOnSinglePage: true }}
-                loading={allUsersQuery.isLoading}
+                loading={
+                  allUsersQuery.isLoading ||
+                  currentUserQuery.isLoading ||
+                  campusesQuery.isLoading
+                }
               />
             </Space>
           </Col>
         </Row>
-        {(allUsersQuery.isFetching || allUsersQuery.isLoading) && "Loading..."}
       </Card>
     </Layout>
   );

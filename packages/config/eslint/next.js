@@ -13,6 +13,7 @@ const project = resolve(process.cwd(), "tsconfig.json");
 
 module.exports = {
   extends: [
+    "./eslint-preset",
     "@vercel/style-guide/eslint/node",
     "@vercel/style-guide/eslint/browser",
     "@vercel/style-guide/eslint/typescript",
@@ -37,6 +38,9 @@ module.exports = {
   ignorePatterns: ["node_modules/", "dist/"],
   // add rules configurations here
   rules: {
+    "no-console": "off",
     "import/no-default-export": "off",
+    "@next/next/no-html-link-for-pages": "error",
+    "@typescript-eslint/explicit-function-return-type": "off",
   },
 };

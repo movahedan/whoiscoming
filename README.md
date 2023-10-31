@@ -1,4 +1,6 @@
-# Whoiscoming starter
+# Whoiscoming 
+
+The proposed project is a comprehensive office attendance management system, designed to streamline the process of logging and tracking office days for all team members. Divided into two main backend services and two frontend applications, the system ensures a microservices-based architecture that enhances maintainability and scalability. The backend services are built using Nest.js, with one service handling authentication and settings, and the other managing timing table data, all backed by a Postgresql database and Prisma as the ORM. On the frontend, we have two separate Next.js applications, the first frontend app is focused on authentication, while the second handles user settings and office day entries. The entire project is structured as a monorepo using Turborepo, ensuring streamlined workflow and code sharing, with GitHub Actions and Vercel handling the CI/CD pipeline, and an OpenAPI specification in place to auto-generate the data layer for the frontend, ensuring consistency and speeding up the development process. This setup not only facilitates a clear separation of concerns but also provides a robust, scalable, and user-friendly solution to office attendance management.
 
 ## What's inside?
 
@@ -6,10 +8,9 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-
 #### Apps
 
-- `docs`: a [Next.js](https://nextjs.org/) app
+- `auth`: a [Next.js](https://nextjs.org/) app
 - `web`: another [Next.js](https://nextjs.org/) app
 
 #### Packages

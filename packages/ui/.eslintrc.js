@@ -1,3 +1,1 @@
-module.exports = {
-  extends: ["custom/react-internal"],
-};
+module.exports = require("config/eslint/react-internal");

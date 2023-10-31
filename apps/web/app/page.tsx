@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { Card } from "ui";
 import { useEffect, useState } from "react";
@@ -13,8 +13,6 @@ function Gradient({
   conic?: boolean;
   className?: string;
 }): JSX.Element {
-  
-
   return (
     <span
       className={[
@@ -57,13 +55,18 @@ export default function Page(): JSX.Element {
   const [data, setData] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5002/").then(res => {
-        if(res.ok) return res.json();
+    fetch("http://localhost:5002/")
+      .then((res) => {
+        if (res.ok) return res.json();
         throw Error(res.statusText);
-      }).then((res) => {
-        setData((res as {message: string}).message)
-      }).catch(e => { throw e })
-  }, [])
+      })
+      .then((res) => {
+        setData((res as { message: string }).message);
+      })
+      .catch((e) => {
+        throw e;
+      });
+  }, []);
 
   return (
     <main className={styles.main}>

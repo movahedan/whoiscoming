@@ -5,22 +5,13 @@ node_modules
 .pnp
 .pnp.js
 
-# testing
-coverage
-
-# next.js
-.next/
-out/
+# out and dist directories
+.next
+.turbo
+.vercel
+out
 build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+dist
 
 # local env files
 .env
@@ -29,10 +20,14 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# turbo
-.turbo
+# testing
+coverage
 
-# vercel
-.vercel
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-**/dist
+# misc
+.DS_Store
+*.pem

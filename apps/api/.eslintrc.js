@@ -1,7 +1,7 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'tsconfig.json',
+    project: 'config/tsconfig/nestjs.json',
     sourceType: 'module',
     tsconfigRootDir: __dirname,
   },

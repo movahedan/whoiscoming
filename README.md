@@ -1,14 +1,4 @@
-# Turborepo starter
-
-This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+# Whoiscoming starter
 
 ## What's inside?
 
@@ -16,11 +6,16 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
+
+#### Apps
+
 - `docs`: a [Next.js](https://nextjs.org/) app
 - `web`: another [Next.js](https://nextjs.org/) app
+
+#### Packages
+
 - `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `config`: `eslint` and `tsconfig` and `tailwind` configurations
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
@@ -37,8 +32,7 @@ This Turborepo has some additional tools already setup for you:
 To build all apps and packages, run the following command:
 
 ```
-cd whoiscoming
-pnpm build
+yarn build
 ```
 
 ### Develop
@@ -46,8 +40,7 @@ pnpm build
 To develop all apps and packages, run the following command:
 
 ```
-cd whoiscoming
-pnpm dev
+yarn dev
 ```
 
 ### Remote Caching
@@ -57,7 +50,6 @@ Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo
 By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
 
 ```
-cd whoiscoming
 npx turbo login
 ```
 

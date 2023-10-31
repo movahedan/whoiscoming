@@ -1,3 +1,6 @@
+// These scripts can be used with `nps` command
+// For instance: `npx nps prepare.ci.web` or globally: `nps prepare`
+
 const path = require("path");
 
 const apiPath = path.resolve(__dirname, "apps/api");

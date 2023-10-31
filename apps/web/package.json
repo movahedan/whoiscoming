@@ -19,9 +19,8 @@
     "@types/node": "^17.0.12",
     "@types/react": "^18.0.22",
     "@types/react-dom": "^18.0.7",
-    "eslint-config-custom": "*",
     "autoprefixer": "^10.4.14",
-    "tsconfig": "*",
+    "config": "*",
     "tailwindcss": "^3.3.3",
     "typescript": "^4.5.3"
   }
